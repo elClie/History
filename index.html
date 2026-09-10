@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bài 6 · Cách mạng tháng Tám năm 1945</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/deck.css?v=26" />
+  <link rel="stylesheet" href="css/starfield.css?v=24" />
+  <link rel="stylesheet" href="css/atmosphere.css?v=25" />
+  <link rel="stylesheet" href="css/fx-motion.css?v=36" />
+  <link rel="stylesheet" href="css/fx-crt.css?v=26" />
+</head>
+<body class="scene-hero">
+  <div class="sky" aria-hidden="true"></div>
+  <div class="starfield" aria-hidden="true">
+    <i class="stars-far"></i>
+    <i class="stars-mid"></i>
+    <i class="stars-near"></i>
+  </div>
+  <canvas id="amb" aria-hidden="true"></canvas>
+  <div class="mist" aria-hidden="true"></div>
+  <div class="horizon" aria-hidden="true"></div>
+  <div class="flame-bed" aria-hidden="true"></div>
+  <i class="smoke-blob b1" aria-hidden="true"></i>
+  <i class="smoke-blob b2" aria-hidden="true"></i>
+  <i class="smoke-blob b3" aria-hidden="true"></i>
+  <i class="smoke-blob b4" aria-hidden="true"></i>
+  <i class="smoke-blob b5" aria-hidden="true"></i>
+  <i class="smoke-blob b6" aria-hidden="true"></i>
+  <i class="ember-rise" aria-hidden="true"></i>
+  <canvas id="sparks" aria-hidden="true"></canvas>
+  <div id="burn-layer" aria-hidden="true"></div>
+  <p class="side-script" aria-hidden="true">Cách mạng tháng Tám · 1945</p>
+
+  <main class="deck" id="deck" tabindex="0">
+
+    <!-- 1. HERO -->
+    <section class="slide active" data-title="Mở đầu" data-ghost="1945">
+      <div class="hero-bg">
+        <div class="hero-radial"></div>
+        <div class="hero-star" aria-hidden="true">
+          <svg viewBox="0 0 100 100"><polygon points="50,4 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38"/></svg>
+        </div>
+        <div class="hero-lines" aria-hidden="true"></div>
+      </div>
+      <div class="hero-content">
+        <p class="eyebrow reveal">Chủ đề 3 · Từ tháng 8 năm 1945 đến nay</p>
+        <h1 class="reveal d1">
+          Cách mạng<br />tháng Tám<br /><em>năm 1945</em>
+        </h1>
+        <p class="lede reveal d2">Bước ngoặt khai sinh nước Việt Nam Dân chủ Cộng hòa</p>
+        <div class="hero-meta reveal d3">
+          <span>SGK Lịch sử 12</span>
+          <span class="dot"></span>
+          <span>Kết nối tri thức với cuộc sống</span>
+          <span class="dot"></span>
+          <span>tr. 31–36</span>
+        </div>
+      </div>
+      <div class="seal" aria-hidden="true"><span>CMTT<br />1945</span></div>
+      <p class="hint reveal d4">→ Space · click</p>
+    </section>
+
+    <!-- 2. MỤC TIÊU -->
+    <section class="slide" data-title="Mục tiêu" data-ghost="MỤC TIÊU">
+      <div class="slide-inner">
+        <p class="section-tag reveal">Học xong bài này</p>
+        <h2 class="reveal d1">Ba năng lực trọng tâm</h2>
+        <div class="goal-grid">
+          <article class="goal reveal d1">
+            <span class="goal-num">01</span>
+            <h3>Trình bày</h3>
+            <p>Khái quát bối cảnh lịch sử và diễn biến chính của Cách mạng tháng Tám năm 1945.</p>
+          </article>
+          <article class="goal reveal d2">
+            <span class="goal-num">02</span>
+            <h3>Nêu</h3>
+            <p>Nguyên nhân thắng lợi của Cách mạng tháng Tám năm 1945.</p>
+          </article>
+          <article class="goal reveal d3">
+            <span class="goal-num">03</span>
+            <h3>Phân tích</h3>
+            <p>Ý nghĩa lịch sử và bài học kinh nghiệm từ thắng lợi Cách mạng tháng Tám.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MỞ ĐẦU HOOK -->
+    <section class="slide" data-title="2·9·1945" data-ghost="BA ĐÌNH">
+      <div class="split">
+        <div class="split-visual archival">
+          <div class="archival-frame">
+            <div class="archival-mark">02 · 09 · 1945</div>
+            <div class="archival-podium">
+              <div class="podium-rail"></div>
+              <div class="podium-star">★</div>
+            </div>
+            <p class="archival-caption">Quảng trường Ba Đình · Hà Nội</p>
+          </div>
+        </div>
+        <div class="split-copy">
+          <p class="section-tag reveal">Mở đầu</p>
+          <h2 class="reveal d1">Ngày độc lập được tuyên bố</h2>
+          <p class="body reveal d2">
+            Ngày <strong>2 – 9 – 1945</strong>, tại Quảng trường Ba Đình lịch sử,
+            Chủ tịch <strong>Hồ Chí Minh</strong> đọc <em>Tuyên ngôn Độc lập</em>,
+            trịnh trọng tuyên bố trước quốc dân đồng bào và thế giới sự ra đời của
+            nước <strong>Việt Nam Dân chủ Cộng hòa</strong>.
+          </p>
+          <div class="ask-box reveal d3">
+            <p class="ask-label">Câu hỏi dẫn dắt</p>
+            <ul>
+              <li>Cách mạng tháng Tám diễn ra trong bối cảnh và với diễn biến như thế nào?</li>
+              <li>Vì sao đây là sự kiện lớn trong lịch sử dân tộc?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. BỐI CẢNH QUỐC TẾ -->
+    <section class="slide" data-title="Bối cảnh quốc tế" data-ghost="THẾ GIỚI">
+      <div class="slide-inner wide">
+        <p class="section-tag reveal">1. Bối cảnh lịch sử</p>
+        <h2 class="reveal d1">Bối cảnh quốc tế</h2>
+        <p class="subhead reveal d1">Chiến tranh thế giới thứ hai bước vào giai đoạn kết thúc</p>
+        <div class="timeline-rail">
+          <div class="t-item reveal d1">
+            <time>17/7 – 2/8</time>
+            <h3>Hội nghị Potsdam</h3>
+            <p>Quyết định quân đội Trung Hoa Dân quốc giải giáp Nhật <em>phía bắc vĩ tuyến 16°</em>; quân Anh giải giáp <em>phía nam</em> Đông Dương.</p>
+          </div>
+          <div class="t-item reveal d2">
+            <time>6 &amp; 9/8</time>
+            <h3>Bom nguyên tử</h3>
+            <p>Mĩ ném bom nguyên tử xuống Hiroshima và Nagasaki.</p>
+          </div>
+          <div class="t-item reveal d3">
+            <time>9/8</time>
+            <h3>Liên Xô tấn quân</h3>
+            <p>Hồng quân Liên Xô tấn công đạo quân Quan Đông của Nhật Bản.</p>
+          </div>
+          <div class="t-item reveal d4 accent">
+            <time>15/8</time>
+            <h3>Nhật đầu hàng</h3>
+            <p>Nhật Bản tuyên bố đầu hàng Đồng minh không điều kiện — thời cơ chiến lược mở ra.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. BỐI CẢNH TRONG NƯỚC -->
+    <section class="slide" data-title="Bối cảnh trong nước" data-ghost="TRONG NƯỚC">
+      <div class="slide-inner">
+        <p class="section-tag reveal">1. Bối cảnh lịch sử</p>
+        <h2 class="reveal d1">Bối cảnh trong nước</h2>
+        <div class="two-col">
+          <div class="stack reveal d1">
+            <h3 class="mini-h">Khủng hoảng của kẻ thù</h3>
+            <ul class="bullets">
+              <li>Quân Nhật ở Đông Dương mất tinh thần.</li>
+              <li>Chính phủ thân Nhật Trần Trọng Kim hoang mang, rối loạn.</li>
+            </ul>
+          </div>
+          <div class="stack reveal d2">
+            <h3 class="mini-h">Phong trào quần chúng</h3>
+            <ul class="bullets">
+              <li>Từ <strong>3 → 8/1945</strong>: cao trào kháng Nhật cứu nước mạnh mẽ.</li>
+              <li>Chuẩn bị lực lượng và tinh thần cho Tổng khởi nghĩa.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout reveal d3">
+          <span class="callout-kicker">Thời cơ</span>
+          <p>Kẻ thù suy yếu + quần chúng sẵn sàng → điều kiện chín muồi để Đảng phát động Tổng khởi nghĩa giành chính quyền.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. CHỦ TRƯƠNG ĐẢNG / TÂN TRÀO -->
+    <section class="slide" data-title="Chủ trương · Tân Trào" data-ghost="TÂN TRÀO">
+      <div class="slide-inner">
+        <p class="section-tag reveal">1. Bối cảnh lịch sử</p>
+        <h2 class="reveal d1">Chủ trương của Đảng · Tân Trào</h2>
+        <div class="event-rows">
+          <div class="event-row reveal d1">
+            <div class="er-date">13/8</div>
+            <div class="er-body">
+              <h3>Ủy ban Khởi nghĩa toàn quốc</h3>
+              <p>Trung ương Đảng và Tổng bộ Việt Minh thành lập Ủy ban; ban hành <strong>Quân lệnh số 1</strong> — phát động Tổng khởi nghĩa.</p>
+            </div>
+          </div>
+          <div class="event-row reveal d2">
+            <div class="er-date">14–15/8</div>
+            <div class="er-body">
+              <h3>Hội nghị toàn quốc của Đảng</h3>
+              <p>Họp tại <strong>Tân Trào</strong> (Tuyên Quang): quyết định Tổng khởi nghĩa và chủ trương sau khi giành chính quyền.</p>
+            </div>
+          </div>
+          <div class="event-row reveal d3">
+            <div class="er-date">16–17/8</div>
+            <div class="er-body">
+              <h3>Đại hội Quốc dân</h3>
+              <p>Tán thành chủ trương khởi nghĩa; bầu <strong>Ủy ban Dân tộc giải phóng Việt Nam</strong> do Hồ Chí Minh làm Chủ tịch — Chính phủ lâm thời.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. DIỄN BIẾN OVERVIEW -->
+    <section class="slide" data-title="Diễn biến" data-ghost="KHỞI NGHĨA">
+      <div class="slide-inner">
+        <p class="section-tag reveal">2. Diễn biến chính</p>
+        <h2 class="reveal d1">Ngọn lửa khởi nghĩa lan nhanh</h2>
+        <p class="body reveal d2">
+          Giữa tháng 8/1945, không khí cách mạng sục sôi cả nước.
+          Từ khoảng <strong>14/8</strong>, nhiều địa phương đã nổi dậy.
+          Dưới sức ép quần chúng và nghệ thuật chỉ đạo khéo léo,
+          quân Nhật cơ bản không can thiệp — thắng lợi nhanh, ít đổ máu.
+        </p>
+        <div class="stat-row reveal d3">
+          <div class="stat"><strong>~2 tuần</strong><span>Tổng khởi nghĩa cả nước</span></div>
+          <div class="stat"><strong>19 · 23 · 25</strong><span>Hà Nội · Huế · Sài Gòn</span></div>
+          <div class="stat"><strong>2/9</strong><span>Tuyên ngôn Độc lập</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. TIMELINE EARLY -->
+    <section class="slide" data-title="Mở đầu khởi nghĩa" data-ghost="16·18">
+      <div class="slide-inner wide">
+        <p class="section-tag reveal">2. Diễn biến chính</p>
+        <h2 class="reveal d1">Những ngày mở đầu</h2>
+        <div class="cards-flow">
+          <article class="flow-card reveal d1">
+            <time>16/8</time>
+            <h3>Thái Nguyên</h3>
+            <p>Một đơn vị Giải phóng quân do <strong>Võ Nguyên Giáp</strong> chỉ huy từ Tân Trào về giải phóng thị xã Thái Nguyên — mở đường về Hà Nội.</p>
+          </article>
+          <article class="flow-card reveal d2 highlight">
+            <time>18/8</time>
+            <h3>Bốn tỉnh đầu tiên</h3>
+            <p><strong>Bắc Giang · Hải Dương · Hà Tĩnh · Quảng Nam</strong> giành chính quyền thắng lợi sớm nhất.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. HÀ NỘI -->
+    <section class="slide" data-title="Hà Nội 19/8" data-ghost="HÀ NỘI">
+      <div class="split invert">
+        <div class="split-copy">
+          <p class="section-tag reveal">2. Diễn biến chính</p>
+          <p class="big-date reveal d1">19 · 8 · 1945</p>
+          <h2 class="reveal d1">Khởi nghĩa Hà Nội</h2>
+          <ul class="bullets reveal d2">
+            <li>Quần chúng cách mạng, có lực lượng tự vệ chiến đấu hỗ trợ, chiếm các cơ quan đầu não:</li>
+          </ul>
+          <div class="chip-row reveal d2">
+            <span>Phủ Khâm sai</span>
+            <span>Sở Liêm phóng</span>
+            <span>Sở Mật thám</span>
+            <span>Đài Phát thanh</span>
+            <span>Bưu điện…</span>
+          </div>
+          <p class="body reveal d3">Chiều tối cùng ngày, khởi nghĩa Hà Nội <strong>thắng lợi</strong> — tạo cú hích cho cả nước.</p>
+        </div>
+        <div class="split-visual map-panel">
+          <div class="city-badge reveal d2">
+            <span class="city-name">Hà Nội</span>
+            <span class="city-role">Thủ đô · trung tâm chính trị</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. HUẾ · SÀI GÒN · HOÀN THÀNH -->
+    <section class="slide" data-title="Huế · Sài Gòn" data-ghost="CẢ NƯỚC">
+      <div class="slide-inner">
+        <p class="section-tag reveal">2. Diễn biến chính</p>
+        <h2 class="reveal d1">Từ cố đô đến Nam Bộ</h2>
+        <div class="triple">
+          <article class="tri reveal d1">
+            <time>23/8</time>
+            <h3>Huế</h3>
+            <p>Hàng vạn quần chúng biểu tình, chiếm công sở — chính quyền về tay nhân dân.</p>
+          </article>
+          <article class="tri reveal d2">
+            <time>25/8</time>
+            <h3>Sài Gòn</h3>
+            <p>Nhân dân Sài Gòn và vùng phụ cận mít tinh dưới sự tổ chức của Mặt trận Việt Minh; chính quyền cách mạng được giới thiệu — khởi nghĩa thắng lợi.</p>
+          </article>
+          <article class="tri reveal d3">
+            <time>28/8</time>
+            <h3>Cả nước</h3>
+            <p>Các địa phương cuối cùng (<strong>Đồng Nai Thượng, Hà Tiên</strong>) giành được chính quyền.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. TUYÊN NGÔN + TƯ LIỆU 1 -->
+    <section class="slide" data-title="Tuyên ngôn Độc lập" data-ghost="ĐỘC LẬP">
+      <div class="slide-inner">
+        <p class="section-tag reveal">2. Diễn biến chính</p>
+        <p class="big-date reveal d1">2 · 9 · 1945</p>
+        <h2 class="reveal d1">Tuyên ngôn Độc lập</h2>
+        <p class="body reveal d2">
+          Tại Quảng trường Ba Đình, Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập,
+          tuyên bố sự ra đời của nước Việt Nam Dân chủ Cộng hòa —
+          kết tinh thắng lợi của Tổng khởi nghĩa.
+        </p>
+        <blockquote class="quote reveal d3">
+          <p>
+            “Mới từ 12 giờ trưa, những nẻo đường dẫn vào vườn hoa Ba Đình…
+            Đến đây, ai cũng chỉ còn là một người dân Việt Nam giữa những người dân Việt Nam khác
+            đi đón nhận lời tuyên bố chính thức về nền độc lập của nước nhà…”
+          </p>
+          <footer>Tư liệu 1 · Báo Cứu quốc số 36, ngày 5–9–1945</footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- 12. NGUYÊN NHÂN CHỦ QUAN -->
+    <section class="slide" data-title="Nguyên nhân chủ quan" data-ghost="CHỦ QUAN">
+      <div class="slide-inner">
+        <p class="section-tag reveal">3. Nguyên nhân thắng lợi</p>
+        <h2 class="reveal d1">Nguyên nhân chủ quan</h2>
+        <div class="cause-list">
+          <article class="cause reveal d1">
+            <span class="cause-i">01</span>
+            <div>
+              <h3>Đường lối lãnh đạo đúng đắn, sáng tạo</h3>
+              <p>Đảng Cộng sản Đông Dương và Chủ tịch Hồ Chí Minh vận dụng sáng tạo chủ nghĩa Mác – Lênin vào thực tiễn Việt Nam; Trung ương Đảng và Mặt trận Việt Minh linh hoạt chớp thời cơ, phát động quần chúng nổi dậy.</p>
+            </div>
+          </article>
+          <article class="cause reveal d2">
+            <span class="cause-i">02</span>
+            <div>
+              <h3>Truyền thống yêu nước, đoàn kết</h3>
+              <p>Khi Đảng và Việt Minh giương cao ngọn cờ giải phóng dân tộc, cả dân tộc một lòng đứng dậy cứu nước.</p>
+            </div>
+          </article>
+          <article class="cause reveal d3">
+            <span class="cause-i">03</span>
+            <div>
+              <h3>Chuẩn bị lực lượng lâu dài, chu đáo</h3>
+              <p>15 năm chuẩn bị liên tục: lực lượng chính trị, vũ trang, căn cứ địa; kết hợp chính trị – vũ trang – ngoại giao khi giành chính quyền.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13. NGUYÊN NHÂN KHÁCH QUAN -->
+    <section class="slide" data-title="Nguyên nhân khách quan" data-ghost="KHÁCH QUAN">
+      <div class="slide-inner narrow">
+        <p class="section-tag reveal">3. Nguyên nhân thắng lợi</p>
+        <h2 class="reveal d1">Nguyên nhân khách quan</h2>
+        <div class="spotlight reveal d2">
+          <p>
+            Thắng lợi của phe Đồng minh và Hồng quân Liên Xô chống phát xít —
+            đặc biệt là sự thất bại của phát xít Nhật —
+            tạo <strong>thời cơ khách quan thuận lợi</strong>,
+            củng cố niềm tin của Đảng và nhân dân vào thắng lợi của sự nghiệp giải phóng dân tộc.
+          </p>
+        </div>
+        <p class="note reveal d3">Chủ quan quyết định · Khách quan tạo điều kiện</p>
+      </div>
+    </section>
+
+    <!-- 14. Ý NGHĨA TRONG NƯỚC -->
+    <section class="slide" data-title="Ý nghĩa trong nước" data-ghost="Ý NGHĨA">
+      <div class="slide-inner">
+        <p class="section-tag reveal">3. Ý nghĩa lịch sử</p>
+        <h2 class="reveal d1">Đối với dân tộc Việt Nam</h2>
+        <blockquote class="quote compact reveal d1">
+          <p>Lần đầu tiên trong lịch sử, một Đảng mới 15 tuổi đã lãnh đạo cách mạng thành công ở một nước thuộc địa nửa phong kiến, giành chính quyền về tay nhân dân.</p>
+          <footer>Tư liệu 2 · Hồ Chí Minh toàn tập, tập 6</footer>
+        </blockquote>
+        <ul class="check-list reveal d2">
+          <li>Lật đổ hơn <strong>80 năm</strong> ách thống trị thực dân Pháp và gần <strong>5 năm</strong> chiếm đóng của phát xít Nhật.</li>
+          <li>Chấm dứt chế độ quân chủ tồn tại hơn <strong>một nghìn năm</strong>.</li>
+          <li>Lập nên nước <strong>Việt Nam Dân chủ Cộng hòa</strong> — Đảng trở thành đảng cầm quyền; nhân dân từ thân phận nô lệ thành người làm chủ.</li>
+          <li>Mở ra kỷ nguyên độc lập, tự do của dân tộc theo con đường cộng hòa dân chủ.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 15. Ý NGHĨA QUỐC TẾ -->
+    <section class="slide" data-title="Ý nghĩa quốc tế" data-ghost="THẾ GIỚI">
+      <div class="slide-inner">
+        <p class="section-tag reveal">3. Ý nghĩa lịch sử</p>
+        <h2 class="reveal d1">Đối với thế giới</h2>
+        <div class="goal-grid three">
+          <article class="goal reveal d1">
+            <span class="goal-num">Ⅰ</span>
+            <h3>Chống phát xít</h3>
+            <p>Góp phần vào thắng lợi của lực lượng hòa bình, dân chủ, tiến bộ thế giới chống chủ nghĩa phát xít.</p>
+          </article>
+          <article class="goal reveal d2">
+            <span class="goal-num">Ⅱ</span>
+            <h3>Sụp đổ thuộc địa</h3>
+            <p>Góp phần làm lung lay hệ thống thuộc địa của chủ nghĩa đế quốc.</p>
+          </article>
+          <article class="goal reveal d3">
+            <span class="goal-num">Ⅲ</span>
+            <h3>Cổ vũ thuộc địa</h3>
+            <p>Cổ vũ phong trào giải phóng dân tộc ở các nước thuộc địa và phụ thuộc trên thế giới.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. BÀI HỌC -->
+    <section class="slide" data-title="Bài học kinh nghiệm" data-ghost="BÀI HỌC">
+      <div class="slide-inner">
+        <p class="section-tag reveal">3. Bài học kinh nghiệm</p>
+        <h2 class="reveal d1">Ba bài học còn nguyên giá trị</h2>
+        <div class="lesson-stack">
+          <article class="lesson-card reveal d1">
+            <h3>Sự lãnh đạo của Đảng</h3>
+            <p>Đảng là nhân tố quyết định thắng lợi. Cần đường lối chính trị đúng đắn, vận dụng sáng tạo lí luận vào thực tiễn Việt Nam; chủ động, linh hoạt, sáng tạo trong lãnh đạo.</p>
+          </article>
+          <article class="lesson-card reveal d2">
+            <h3>Đại đoàn kết dân tộc</h3>
+            <p>Thắng lợi gắn với vai trò Mặt trận Việt Minh trong tập hợp, tổ chức toàn dân. Cần hình thức phong phú, sáng tạo để khơi dậy yêu nước và sức mạnh đoàn kết.</p>
+          </article>
+          <article class="lesson-card reveal d3">
+            <h3>Nắm bắt thời cơ</h3>
+            <p>Xác định đúng thời cơ, chủ động và mau lẹ chớp thời cơ hành động để đưa cách mạng đến thành công.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17. LUYỆN TẬP / VẬN DỤNG -->
+    <section class="slide" data-title="Luyện tập" data-ghost="VẬN DỤNG">
+      <div class="slide-inner">
+        <p class="section-tag reveal">Luyện tập &amp; vận dụng</p>
+        <h2 class="reveal d1">Củng cố kiến thức</h2>
+        <div class="practice-grid">
+          <article class="prac reveal d1">
+            <span class="prac-tag">Luyện tập</span>
+            <h3>Trục thời gian</h3>
+            <p>Lập trục thời gian (theo ý tưởng của em) về diễn biến chính của Cách mạng tháng Tám năm 1945.</p>
+          </article>
+          <article class="prac reveal d2">
+            <span class="prac-tag">Luyện tập</span>
+            <h3>Nhận định bước ngoặt</h3>
+            <p>Làm rõ: Cách mạng tháng Tám có ý nghĩa bước ngoặt và để lại nhiều bài học đối với lịch sử dân tộc.</p>
+          </article>
+          <article class="prac reveal d3 span2">
+            <span class="prac-tag">Vận dụng</span>
+            <h3>Liên hệ hôm nay</h3>
+            <p>Những bài học nào từ thắng lợi Cách mạng tháng Tám có thể vận dụng vào công cuộc xây dựng và bảo vệ Tổ quốc hiện nay? <em class="soft">(đoàn kết · lãnh đạo · nắm thời cơ)</em></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18. KẾT -->
+    <section class="slide finale" data-title="Kết" data-ghost="1945">
+      <div class="finale-bg" aria-hidden="true">
+        <div class="hero-star finale-star">
+          <svg viewBox="0 0 100 100"><polygon points="50,4 61,38 97,38 68,59 79,93 50,72 21,93 32,59 3,38 39,38"/></svg>
+        </div>
+      </div>
+      <div class="finale-content">
+        <p class="section-tag reveal">Tóm lược</p>
+        <h2 class="reveal d1">Một dân tộc đã đứng dậy</h2>
+        <p class="lede reveal d2">
+          Từ thời cơ tháng 8 đến Tuyên ngôn 2/9 —
+          Cách mạng tháng Tám 1945 mở ra kỷ nguyên độc lập cho Việt Nam.
+        </p>
+        <div class="finale-keys reveal d3">
+          <span>Bối cảnh</span>
+          <span>Diễn biến</span>
+          <span>Nguyên nhân</span>
+          <span>Ý nghĩa</span>
+          <span>Bài học</span>
+        </div>
+        <p class="thanks reveal d4">Cảm ơn đã lắng nghe</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="hatch" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="overview" id="overview" hidden></div>
+
+  <script src="js/burn.js?v=40"></script>
+  <script src="js/fx.js?v=34"></script>
+  <script src="js/deck.js?v=33"></script>
+</body>
+</html>

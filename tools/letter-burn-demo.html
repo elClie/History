@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Letter burn · 3 methods compare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #100a0e;
+      --paper: #f2e6d0;
+      --muted: #9a8b78;
+      --amber: #e8a04a;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(120, 30, 28, 0.35), transparent 50%),
+        linear-gradient(#0a0810, #140c0c);
+      color: var(--paper);
+      font-family: "Literata", Georgia, serif;
+    }
+    header {
+      padding: 1.5rem 1.75rem 0.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+      letter-spacing: 0.02em;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-family: system-ui, sans-serif;
+      line-height: 1.45;
+    }
+    .toolbar {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin: 1rem 0 0;
+    }
+    button {
+      font: 600 0.8rem system-ui, sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.55rem 1rem;
+      border: 1px solid rgba(224, 192, 120, 0.35);
+      background: rgba(20, 12, 14, 0.7);
+      color: var(--paper);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--amber); color: #fff; }
+    button.primary {
+      background: rgba(180, 60, 30, 0.45);
+      border-color: rgba(255, 140, 60, 0.5);
+    }
+    main {
+      display: grid;
+      gap: 1.25rem;
+      padding: 1.25rem 1.75rem 2.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (min-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .card {
+      border: 1px solid rgba(224, 192, 120, 0.18);
+      background: rgba(8, 6, 10, 0.55);
+      border-radius: 12px;
+      padding: 1rem 1.15rem 1.25rem;
+      overflow: hidden;
+    }
+    .label {
+      font: 600 0.72rem/1.3 system-ui, sans-serif;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.35rem;
+    }
+    .hint {
+      font: 0.78rem/1.4 system-ui, sans-serif;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+    .stage {
+      position: relative;
+      min-height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0.5rem 0;
+    }
+
+    /* ===== Method 1: per-letter spans + noise mask ===== */
+    .m1 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--paper);
+    }
+    .m1 .ch {
+      display: inline-block;
+      white-space: pre;
+      will-change: opacity, filter;
+    }
+    .m1.is-burning .ch {
+      animation: m1Burn 1.65s ease-in forwards;
+      animation-delay: var(--d, 0ms);
+    }
+    @keyframes m1Burn {
+      0% {
+        opacity: 1;
+        filter: none;
+        text-shadow: none;
+        transform: none;
+      }
+      28% {
+        opacity: 1;
+        color: #d9c4a0;
+        filter: brightness(1.15);
+        text-shadow:
+          0 0 6px rgba(200, 110, 40, 0.35),
+          0 0 1px rgba(40, 20, 10, 0.5);
+      }
+      55% {
+        opacity: 0.55;
+        color: #5a4030;
+        filter: brightness(0.55);
+        text-shadow:
+          0 0 10px rgba(180, 80, 20, 0.45),
+          0 1px 0 rgba(20, 10, 5, 0.8);
+      }
+      78% {
+        opacity: 0.12;
+        filter: brightness(0.2) blur(0.4px);
+        text-shadow: 0 0 8px rgba(255, 140, 50, 0.25);
+        transform: translateY(2px);
+      }
+      100% {
+        opacity: 0;
+        filter: blur(1px);
+        text-shadow: none;
+        transform: translateY(4px);
+      }
+    }
+
+    /* ===== Method 2 / 3 stages ===== */
+    .stage canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .stage.tall {
+      min-height: 160px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Letter burn compare</h1>
+    <p>
+      Same line, three methods. <strong>1</strong> = span dissolve ·
+      <strong>2</strong> = glyph-shaped canvas burn ·
+      <strong>3</strong> = pixel snapshot burn.
+      Glow kept muted on purpose.
+    </p>
+    <div class="toolbar">
+      <button class="primary" id="btn-burn" type="button">Burn all</button>
+      <button id="btn-reset" type="button">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="label">Method 1 · per-letter dissolve</div>
+      <p class="hint">Each character is a &lt;span&gt;. Staggered char + soft amber. Does not trace glyph outlines.</p>
+      <div class="stage">
+        <p class="m1" id="m1" aria-label="sample"></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="label">Method 2 · glyph-shaped burn</div>
+      <p class="hint">Glyph burn + orange heat glow + rising ash/embers from the burn front.</p>
+      <div class="stage tall">
+        <canvas id="m2" width="1000" height="180"></canvas>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="label">Method 3 · pixel snapshot burn</div>
+      <p class="hint">Whole line rasterized once, then a paper-burn front eats those pixels (holes + char + ember rim).</p>
+      <div class="stage">
+        <canvas id="m3" width="1000" height="120"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SAMPLE = "Cách mạng tháng Tám năm 1945";
+    const FONT = '700 42px "Literata", Georgia, serif';
+    const DURATION = 1800;
+
+    /* ---------- noise (shared) ---------- */
+    function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    const perm = new Uint8Array(512);
+    {
+      const p = new Uint8Array(256);
+      for (let i = 0; i < 256; i++) p[i] = i;
+      for (let i = 255; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        [p[i], p[j]] = [p[j], p[i]];
+      }
+      for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
+    }
+    function grad(h, x, y) {
+      const u = (h & 1) ? x : y;
+      const v = (h & 2) ? y : x;
+      return ((h & 4) ? -u : u) + ((h & 8) ? -v : v) * 0.5;
+    }
+    function noise2(x, y) {
+      const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+      const xf = x - Math.floor(x), yf = y - Math.floor(y);
+      const u = fade(xf), v = fade(yf);
+      const aa = perm[X + perm[Y]], ab = perm[X + perm[Y + 1]];
+      const ba = perm[X + 1 + perm[Y]], bb = perm[X + 1 + perm[Y + 1]];
+      return lerp(
+        lerp(grad(aa, xf, yf), grad(ba, xf - 1, yf), u),
+        lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u),
+        v
+      );
+    }
+    function fbm(x, y) {
+      let v = 0, a = 0.5, f = 1;
+      for (let i = 0; i < 4; i++) {
+        v += a * noise2(x * f, y * f);
+        a *= 0.5;
+        f *= 2.02;
+      }
+      return v * 0.5 + 0.5;
+    }
+
+    /* ---------- Method 1 ---------- */
+    const m1 = document.getElementById("m1");
+    function buildM1() {
+      m1.classList.remove("is-burning");
+      m1.textContent = "";
+      [...SAMPLE].forEach((ch, i) => {
+        const s = document.createElement("span");
+        s.className = "ch";
+        s.textContent = ch;
+        // blob front: center letters a bit earlier
+        const mid = Math.abs(i - SAMPLE.length / 2) / (SAMPLE.length / 2);
+        s.style.setProperty("--d", `${(mid * 420 + i * 28).toFixed(0)}ms`);
+        m1.appendChild(s);
+      });
+    }
+    function burnM1() {
+      m1.classList.remove("is-burning");
+      void m1.offsetWidth;
+      m1.classList.add("is-burning");
+    }
+
+    /* ---------- Method 2: glyph stencil burn ---------- */
+    const c2 = document.getElementById("m2");
+    const x2 = c2.getContext("2d", { willReadFrequently: true });
+    let glyphMask = null;
+    let m2Raf = 0;
+    let m2Ash = [];
+    let m2LastT = 0;
+
+    function layoutCanvas(c, cssH = 120) {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const cssW = c.parentElement.clientWidth;
+      c.width = Math.floor(cssW * dpr);
+      c.height = Math.floor(cssH * dpr);
+      c.style.width = cssW + "px";
+      c.style.height = cssH + "px";
+      return dpr;
+    }
+
+    function bakeGlyphMask() {
+      m2Ash = [];
+      m2LastT = 0;
+      const dpr = layoutCanvas(c2, 180);
+      x2.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = c2.width / dpr, h = c2.height / dpr;
+      x2.clearRect(0, 0, w, h);
+      x2.font = FONT;
+      x2.fillStyle = "#f2e6d0";
+      x2.textBaseline = "middle";
+      // sit text lower so ash has sky above
+      x2.fillText(SAMPLE, 8, h * 0.62);
+      const img = x2.getImageData(0, 0, c2.width, c2.height);
+      const a = new Float32Array(c2.width * c2.height);
+      for (let i = 0, p = 0; i < img.data.length; i += 4, p++) {
+        a[p] = img.data[i + 3] / 255;
+      }
+      glyphMask = a;
+      drawM2(0, 0);
+    }
+
+    function spawnAsh(x, y, dpr, hot) {
+      if (m2Ash.length > 140) m2Ash.shift();
+      const cssX = x / dpr;
+      const cssY = y / dpr;
+      m2Ash.push({
+        x: cssX,
+        y: cssY,
+        vx: (Math.random() - 0.5) * 18,
+        vy: -22 - Math.random() * 55,
+        life: 0.7 + Math.random() * 0.75,
+        decay: 0.35 + Math.random() * 0.45,
+        r: (hot ? 0.9 : 0.55) + Math.random() * 1.4,
+        rot: Math.random() * Math.PI,
+        spin: (Math.random() - 0.5) * 4,
+        hot: hot || Math.random() > 0.55,
+        wob: Math.random() * 6.28,
+      });
+    }
+
+    function stepAsh(dt) {
+      for (let i = m2Ash.length - 1; i >= 0; i--) {
+        const p = m2Ash[i];
+        p.wob += dt * 3.2;
+        p.vx += Math.sin(p.wob) * 12 * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy -= 8 * dt; // keep lifting a bit
+        p.vx *= 0.985;
+        p.rot += p.spin * dt;
+        p.life -= p.decay * dt;
+        if (p.life <= 0 || p.y < -20) m2Ash.splice(i, 1);
+      }
+    }
+
+    function drawAsh(dpr) {
+      if (!m2Ash.length) return;
+      x2.save();
+      x2.setTransform(dpr, 0, 0, dpr, 0, 0);
+      x2.globalCompositeOperation = "lighter";
+      for (const p of m2Ash) {
+        const a = Math.max(0, Math.min(1, p.life));
+        if (a < 0.04) continue;
+        x2.save();
+        x2.translate(p.x, p.y);
+        x2.rotate(p.rot);
+        if (p.hot) {
+          x2.fillStyle = `rgba(255, 130, 40, ${a * 0.75})`;
+          x2.beginPath();
+          x2.ellipse(0, 0, p.r * 1.1, p.r * 0.55, 0, 0, Math.PI * 2);
+          x2.fill();
+          x2.fillStyle = `rgba(255, 200, 90, ${a * 0.35})`;
+          x2.beginPath();
+          x2.arc(0, 0, p.r * 0.45, 0, Math.PI * 2);
+          x2.fill();
+        } else {
+          // paper ash flake — gray-brown, not neon
+          x2.fillStyle = `rgba(160, 130, 105, ${a * 0.55})`;
+          x2.fillRect(-p.r, -p.r * 0.35, p.r * 2.2, p.r * 0.7);
+          x2.fillStyle = `rgba(90, 70, 55, ${a * 0.35})`;
+          x2.fillRect(-p.r * 0.6, -p.r * 0.2, p.r * 1.2, p.r * 0.4);
+        }
+        x2.restore();
+      }
+      x2.restore();
+    }
+
+    function drawM2(progress, dt = 0.016) {
+      if (!glyphMask) return;
+      const cssW = c2.parentElement.clientWidth || c2.width;
+      const dpr = c2.width / cssW;
+      const W = c2.width, H = c2.height;
+      const img = x2.createImageData(W, H);
+      const bloom = x2.createImageData(W, H);
+      const d = img.data;
+      const bd = bloom.data;
+      const t = progress;
+      const invDpr = 1 / dpr;
+      const spawnBudget = { n: 0, max: 10 };
+
+      function stampBloom(cx, cy, strength, radius) {
+        const r0 = Math.max(2, Math.round(radius * dpr));
+        const r2 = r0 * r0;
+        const x0 = Math.max(0, cx - r0);
+        const x1 = Math.min(W - 1, cx + r0);
+        const y0 = Math.max(0, cy - r0);
+        const y1 = Math.min(H - 1, cy + r0);
+        for (let y = y0; y <= y1; y++) {
+          for (let x = x0; x <= x1; x++) {
+            const dx = x - cx, dy = y - cy;
+            const dist2 = dx * dx + dy * dy;
+            if (dist2 > r2) continue;
+            const fall = 1 - Math.sqrt(dist2) / r0;
+            const w = strength * fall * fall;
+            const o = (y * W + x) * 4;
+            // slightly more orange bloom
+            bd[o] = Math.min(255, bd[o] + 255 * w);
+            bd[o + 1] = Math.min(255, bd[o + 1] + 125 * w);
+            bd[o + 2] = Math.min(255, bd[o + 2] + 35 * w);
+            bd[o + 3] = Math.min(255, bd[o + 3] + 230 * w);
+          }
+        }
+      }
+
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const i = y * W + x;
+          const g = glyphMask[i];
+          if (g < 0.04) continue;
+
+          const nx = x * invDpr * 0.045;
+          const ny = y * invDpr * 0.045;
+          const n = fbm(nx + 2.1, ny + 0.8 + t * 0.9);
+          const edge = n;
+          const heat = Math.max(0, Math.min(1, (t - (edge - 0.22)) / 0.22));
+          const gone = t > edge;
+
+          let r, gch, b, a;
+          if (gone) {
+            const rim = Math.max(0, 1 - (t - edge) / 0.055);
+            if (rim <= 0.02) continue;
+            r = 255;
+            gch = 125 + 35 * rim; // more orange, less yellow
+            b = 32;
+            a = rim * g * 0.95;
+            if (rim > 0.25 && ((x + y) & 3) === 0) {
+              stampBloom(x, y, rim * 0.58 * g, 7);
+            }
+            // ash lifts off the dying rim
+            if (rim > 0.35 && rim < 0.95 && spawnBudget.n < spawnBudget.max && Math.random() < 0.045 * g) {
+              spawnAsh(x, y, dpr, Math.random() > 0.4);
+              spawnBudget.n++;
+            }
+          } else if (heat > 0) {
+            const peak = heat < 0.55
+              ? heat / 0.55
+              : 1 - (heat - 0.55) / 0.45;
+            const glow = Math.pow(peak, 0.85);
+            const ash = Math.max(0, (heat - 0.5) / 0.5);
+
+            // cream → orange-gold → ash
+            r = lerp(242, 255, glow * 0.95);
+            gch = lerp(230, 155, glow * 0.85);
+            b = lerp(208, 55, glow * 0.9);
+            r = lerp(r, 55, ash * 0.92);
+            gch = lerp(gch, 32, ash * 0.92);
+            b = lerp(b, 18, ash * 0.92);
+            r = Math.min(255, r + 85 * glow * (1 - ash));
+            gch = Math.min(255, gch + 18 * glow * (1 - ash));
+            a = g * (0.35 + 0.65 * (1 - ash * 0.85));
+
+            if (glow > 0.2 && ((x + y) & 2) === 0) {
+              stampBloom(x, y, glow * 0.48 * g * (1 - ash * 0.5), 9);
+            }
+            if (heat > 0.55 && heat < 0.92 && spawnBudget.n < spawnBudget.max && Math.random() < 0.02 * g) {
+              spawnAsh(x, y, dpr, true);
+              spawnBudget.n++;
+            }
+          } else {
+            r = 242; gch = 230; b = 208;
+            a = g;
+          }
+
+          const o = i * 4;
+          d[o] = r; d[o + 1] = gch; d[o + 2] = b; d[o + 3] = Math.min(255, a * 255);
+        }
+      }
+
+      const glowCvs = document.createElement("canvas");
+      glowCvs.width = W;
+      glowCvs.height = H;
+      glowCvs.getContext("2d").putImageData(bloom, 0, 0);
+
+      const blurCvs = document.createElement("canvas");
+      blurCvs.width = W;
+      blurCvs.height = H;
+      const bx = blurCvs.getContext("2d");
+      bx.filter = `blur(${Math.max(5, 7 * dpr)}px)`;
+      bx.drawImage(glowCvs, 0, 0);
+      bx.filter = "none";
+
+      const glyphCvs = document.createElement("canvas");
+      glyphCvs.width = W;
+      glyphCvs.height = H;
+      glyphCvs.getContext("2d").putImageData(img, 0, 0);
+
+      x2.save();
+      x2.setTransform(1, 0, 0, 1, 0, 0);
+      x2.clearRect(0, 0, W, H);
+      x2.globalCompositeOperation = "lighter";
+      x2.globalAlpha = 0.92;
+      x2.drawImage(blurCvs, 0, 0);
+      x2.globalAlpha = 0.5;
+      x2.drawImage(blurCvs, 0, 0);
+      x2.globalAlpha = 1;
+      x2.globalCompositeOperation = "source-over";
+      x2.drawImage(glyphCvs, 0, 0);
+      x2.restore();
+
+      stepAsh(dt);
+      drawAsh(dpr);
+    }
+
+    function burnM2() {
+      cancelAnimationFrame(m2Raf);
+      m2Ash = [];
+      m2LastT = performance.now();
+      const t0 = m2LastT;
+      const tick = (now) => {
+        const dt = Math.min(0.05, (now - m2LastT) / 1000);
+        m2LastT = now;
+        const u = Math.min(1, (now - t0) / DURATION);
+        const eased = 1 - Math.pow(1 - u, 2.1);
+        drawM2(u < 1 ? eased * 1.05 : 1.05, dt);
+        if (u < 1 || m2Ash.length) m2Raf = requestAnimationFrame(tick);
+      };
+      m2Raf = requestAnimationFrame(tick);
+    }
+
+    /* ---------- Method 3: full pixel snapshot burn ---------- */
+    const c3 = document.getElementById("m3");
+    const x3 = c3.getContext("2d", { willReadFrequently: true });
+    let snap = null; // ImageData of intact text
+    let m3Raf = 0;
+
+    function bakeSnap() {
+      const dpr = layoutCanvas(c3);
+      x3.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = c3.width / dpr, h = c3.height / dpr;
+      x3.clearRect(0, 0, w, h);
+      // slight letter-spacing feel via normal fill
+      x3.font = FONT;
+      x3.fillStyle = "#f2e6d0";
+      x3.textBaseline = "middle";
+      x3.shadowColor = "rgba(224,192,120,0.15)";
+      x3.shadowBlur = 8;
+      x3.fillText(SAMPLE, 8, h * 0.52);
+      x3.shadowBlur = 0;
+      snap = x3.getImageData(0, 0, c3.width, c3.height);
+      x3.putImageData(snap, 0, 0);
+    }
+
+    function drawM3(progress) {
+      if (!snap) return;
+      const W = c3.width, H = c3.height;
+      const src = snap.data;
+      const img = x3.createImageData(W, H);
+      const d = img.data;
+      const t = progress;
+      const inv = 1 / (c3.parentElement.clientWidth / W * (c3.parentElement.clientWidth ? 1 : 1));
+      // use pixel coords scaled for noise
+      const sx = 0.035 * (1000 / W);
+      const sy = 0.035 * (120 / (H / (devicePixelRatio || 1)));
+
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const i = (y * W + x) * 4;
+          const a0 = src[i + 3] / 255;
+          if (a0 < 0.04) continue;
+
+          const n = fbm(x * sx + 4.2, y * sy + 1.4 - t * 0.85);
+          // paper-burn style: low noise burns first
+          const edge = 0.15 + 0.7 * n;
+          const gone = t > edge;
+          const heat = Math.max(0, Math.min(1, (t - (edge - 0.14)) / 0.14));
+
+          let r = src[i], g = src[i + 1], b = src[i + 2], a = a0;
+
+          if (gone) {
+            const rim = Math.max(0, 1 - (t - edge) / 0.05);
+            if (rim < 0.03) continue;
+            // ember inherits a bit of source color
+            r = Math.min(255, r * 0.35 + 190 * rim);
+            g = Math.min(255, g * 0.2 + 85 * rim);
+            b = Math.min(255, b * 0.1 + 25 * rim);
+            a = a0 * rim * 0.9;
+          } else if (heat > 0) {
+            // char + mild boil
+            const ash = heat;
+            r = r * (1 - ash * 0.85) + 40 * ash;
+            g = g * (1 - ash * 0.88) + 28 * ash;
+            b = b * (1 - ash * 0.9) + 18 * ash;
+            const glow = ash > 0.4 && ash < 0.9 ? (1 - Math.abs(ash - 0.65) / 0.25) * 0.4 : 0;
+            r = Math.min(255, r + 90 * glow);
+            g = Math.min(255, g + 35 * glow);
+            a = a0 * (1 - ash * 0.15);
+          }
+
+          d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = Math.min(255, a * 255);
+        }
+      }
+      x3.putImageData(img, 0, 0);
+    }
+
+    function burnM3() {
+      cancelAnimationFrame(m3Raf);
+      const t0 = performance.now();
+      const tick = (now) => {
+        const u = Math.min(1, (now - t0) / (DURATION + 200));
+        const eased = 1 - Math.pow(1 - u, 2.0);
+        drawM3(eased * 1.08);
+        if (u < 1) m3Raf = requestAnimationFrame(tick);
+      };
+      m3Raf = requestAnimationFrame(tick);
+    }
+
+    /* ---------- controls ---------- */
+    function reset() {
+      cancelAnimationFrame(m2Raf);
+      cancelAnimationFrame(m3Raf);
+      buildM1();
+      bakeGlyphMask();
+      bakeSnap();
+    }
+
+    function burnAll() {
+      burnM1();
+      burnM2();
+      burnM3();
+    }
+
+    document.getElementById("btn-burn").onclick = burnAll;
+    document.getElementById("btn-reset").onclick = reset;
+    window.addEventListener("resize", () => {
+      // debounce-ish
+      clearTimeout(window.__br);
+      window.__br = setTimeout(reset, 120);
+    });
+
+    document.fonts.ready.then(() => {
+      reset();
+    });
+  </script>
+</body>
+</html>

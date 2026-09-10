@@ -1,0 +1,148 @@
+/* quiet motion: type above night, gold frame HUD, no glyph fire */
+
+.hud, .cast, .progress, .overview { display: none !important; }
+
+#amb, #sparks, .starfield {
+  mix-blend-mode: normal !important;
+}
+.stars-near, .stars-mid, .stars-far,
+.stars-near::after, .stars-mid::after, .stars-far::after,
+.ember-rise, .ember-rise::before, .ember-rise::after {
+  mix-blend-mode: plus-lighter !important;
+}
+.plates, .plate { z-index: 2 !important; }
+#amb { z-index: 3 !important; }
+#sparks { z-index: 3 !important; }
+.horizon { z-index: 2 !important; }
+.flame-bed, .smoke-blob, .ember-rise { z-index: 3 !important; }
+.flame-bed::before, .flame-bed::after { display: none !important; }
+.ember-rise,
+.ember-rise::before,
+.ember-rise::after {
+  display: block !important;
+}
+.plates { display: none !important; }
+.deck { z-index: 10 !important; }
+.side-script { display: block !important; z-index: 18; }
+.vignette { z-index: 20 !important; opacity: 0.85; }
+.hatch { z-index: 21 !important; }
+.scan { z-index: 22 !important; opacity: 0.085; }
+.grain { z-index: 23 !important; opacity: 0.08; }
+.flame-bed { height: 22vh !important; opacity: 0.42 !important; }
+
+/* Normal soft CSS smoke — no atlas */
+.smoke-blob {
+  display: block !important;
+  opacity: 0.14 !important;
+  filter: blur(52px) !important;
+}
+.smoke-blob.b1 { opacity: 0.16 !important; }
+.smoke-blob.b2 { opacity: 0.13 !important; }
+.smoke-blob.b3 { opacity: 0.11 !important; }
+.smoke-blob.b4 { opacity: 0.12 !important; }
+.smoke-blob.b5,
+.smoke-blob.b6 { opacity: 0.1 !important; }
+
+/* Per-element burn overlays (GPU) */
+#burn { display: none !important; }
+#burn-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: visible;
+}
+#burn-layer:not(.is-burning) { display: none; }
+#burn-layer .burn-el {
+  position: fixed;
+  display: block;
+  pointer-events: none;
+}
+.fx-el.is-burn-src {
+  visibility: hidden !important;
+}
+.slide.is-leaving .ghost-word,
+.slide.is-leaving .ghost-num,
+.slide.is-leaving .frame {
+  opacity: 0 !important;
+  transition: opacity 0.15s ease;
+}
+
+/* Outgoing DOM fade stays subtle — canvases carry the burn */
+.fx-el.burn-out {
+  animation: quietOut 0.2s ease-in both;
+  animation-delay: var(--stagger, 0ms);
+}
+
+.frame {
+  display: block !important;
+  z-index: 6;
+}
+
+.char, .word { display: inline; }
+.ch-space { display: inline; white-space: pre; }
+
+.fx-el.burn-out {
+  animation: quietOut 0.32s ease-in both;
+  animation-delay: var(--stagger, 0ms);
+}
+.fx-el.burn-in {
+  animation: quietIn 0.62s ease-out both;
+  animation-delay: var(--stagger, 0ms);
+}
+@keyframes quietOut {
+  from { opacity: 1; filter: none; }
+  to { opacity: 0; filter: none; }
+}
+@keyframes quietIn {
+  0% {
+    opacity: 0;
+    filter: brightness(2.4) drop-shadow(0 0 20px rgba(255, 236, 180, 0.9));
+    text-shadow: 0 0 22px rgba(255, 240, 190, 0.85);
+  }
+  12% {
+    opacity: 0.12;
+    filter: brightness(2.5) drop-shadow(0 0 18px rgba(255, 230, 160, 0.85));
+    text-shadow: 0 0 18px rgba(255, 230, 170, 0.8);
+  }
+  20% {
+    opacity: 0.05;
+    filter: brightness(2.1) drop-shadow(0 0 12px rgba(255, 220, 150, 0.55));
+    text-shadow: 0 0 10px rgba(255, 230, 170, 0.45);
+  }
+  28% {
+    opacity: 1;
+    filter: brightness(2.55) drop-shadow(0 0 26px rgba(255, 236, 180, 1));
+    text-shadow: 0 0 28px rgba(255, 244, 200, 1), 0 0 10px rgba(255, 180, 80, 0.7);
+  }
+  52% {
+    opacity: 1;
+    filter: brightness(1.85) drop-shadow(0 0 16px rgba(255, 220, 150, 0.65));
+    text-shadow: 0 0 16px rgba(255, 230, 170, 0.7);
+  }
+  78% {
+    opacity: 1;
+    filter: brightness(1.15) drop-shadow(0 0 6px rgba(255, 210, 140, 0.25));
+    text-shadow: 0 0 6px rgba(255, 220, 160, 0.25);
+  }
+  100% {
+    opacity: 1;
+    filter: none;
+    text-shadow: none;
+  }
+}
+
+#fx-debug { display: none; }
+body.debug #fx-debug { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-el.burn-in, .fx-el.burn-out, .slide.is-entering {
+    animation: none !important;
+  }
+  body.is-flipping .sky::after,
+  body.is-flipping .hero-radial,
+  body.is-flipping .horizon,
+  body.is-flipping .finale-bg {
+    animation: none !important;
+  }
+}

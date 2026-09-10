@@ -1,0 +1,132 @@
+/* archival photo crops — fragments in the margins, type stays king */
+
+.plates {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.plate {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+.plate-star {
+  top: -8%;
+  right: -14%;
+  width: min(38vw, 560px);
+  height: 108vh;
+  background-image: url("../img/plate-star.png?v=22");
+  background-position: 48% 38%;
+  opacity: 0.28;
+  filter: saturate(0.88) contrast(1.12) brightness(0.72);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.35) 28%, #000 62%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.35) 28%, #000 62%);
+  animation: plateDrift 32s ease-in-out infinite alternate;
+}
+
+body.scene-hero .plate-star {
+  right: -6%;
+  width: min(54vw, 780px);
+  opacity: 0.7;
+  filter: saturate(0.95) contrast(1.14) brightness(0.86);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 18%, #000 46%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 18%, #000 46%);
+}
+
+body.scene-split .plate-star,
+body.scene-finale .plate-star {
+  opacity: 0.12;
+}
+
+.plate-crowd {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38vh;
+  background-image: url("../img/plate-crowd.png?v=22");
+  background-position: 50% 55%;
+  background-size: cover;
+  opacity: 0.58;
+  filter: brightness(0.95) saturate(0.95) sepia(0.08) contrast(1.08);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 28%, #000 68%);
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 28%, #000 68%);
+}
+
+body.scene-hero .plate-crowd {
+  height: 30vh;
+  opacity: 0.38;
+}
+
+body.scene-split .plate-crowd {
+  opacity: 0.26;
+  height: 24vh;
+}
+
+.plate-smoke {
+  left: -12%;
+  bottom: -18%;
+  width: 78vw;
+  height: 62vh;
+  background-image: url("../img/plate-smoke.png?v=22");
+  background-position: 40% 70%;
+  opacity: 0.62;
+  filter: brightness(0.95) saturate(1.08);
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 38% 88%, #000 18%, transparent 72%);
+  mask-image: radial-gradient(ellipse 70% 80% at 38% 88%, #000 18%, transparent 72%);
+  animation: smokePlate 26s ease-in-out infinite alternate;
+}
+
+.plate-smoke.alt {
+  left: auto;
+  right: -16%;
+  width: 56vw;
+  height: 52vh;
+  opacity: 0.4;
+  animation-duration: 34s;
+  animation-direction: alternate-reverse;
+  -webkit-mask-image: radial-gradient(ellipse 65% 75% at 70% 90%, #000 12%, transparent 70%);
+  mask-image: radial-gradient(ellipse 65% 75% at 70% 90%, #000 12%, transparent 70%);
+}
+
+@keyframes plateDrift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-2.4%, 1.6%, 0) scale(1.05); }
+}
+@keyframes smokePlate {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
+  to { transform: translate3d(3%, -4%, 0) scale(1.08); opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-star, .plate-smoke { animation: none; }
+}
+
+.smoke-blob.b1 { opacity: 0.34; }
+.smoke-blob.b2 { opacity: 0.28; }
+.smoke-blob.b3 { opacity: 0.26; }
+.smoke-blob.b4 { opacity: 0.22; }
+.smoke-blob.b5 {
+  left: -18%;
+  top: 18%;
+  bottom: auto;
+  right: auto;
+  width: 38vw;
+  height: 48vh;
+  opacity: 0.2;
+  animation-duration: 28s;
+}
+.smoke-blob.b6 {
+  right: 8%;
+  bottom: 6%;
+  left: auto;
+  top: auto;
+  width: 46vw;
+  height: 34vw;
+  opacity: 0.2;
+  animation-duration: 24s;
+  animation-delay: -9s;
+}

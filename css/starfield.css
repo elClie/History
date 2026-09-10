@@ -1,0 +1,95 @@
+/* Sparse starfield — dim gold/white, gentle twinkle */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.starfield i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: rgba(255, 228, 180, 0.35);
+  pointer-events: none;
+}
+.stars-near {
+  opacity: 0.72;
+  animation: starTwinkle 4s ease-in-out infinite alternate;
+  box-shadow:
+    1281px 67px 0 rgba(255, 220, 160, 0.4),
+    1104px 257px 0 rgba(255, 235, 200, 0.35),
+    710px 431px 0 rgba(255, 220, 160, 0.4),
+    137px 52px 0 rgba(255, 255, 255, 0.32),
+    887px 8px 0 rgba(255, 220, 160, 0.38),
+    236px 163px 0 rgba(255, 240, 210, 0.36),
+    428px 455px 0 rgba(255, 255, 255, 0.3),
+    775px 500px 0 rgba(255, 235, 200, 0.35),
+    575px 600px 0 rgba(255, 220, 160, 0.38),
+    1022px 174px 0 rgba(255, 220, 160, 0.4),
+    421px 126px 0 rgba(255, 240, 210, 0.36),
+    499px 128px 0 rgba(255, 220, 160, 0.38),
+    717px 896px 0 rgba(255, 235, 200, 0.35),
+    888px 285px 0 rgba(255, 220, 160, 0.4),
+    1140px 29px 0 rgba(255, 255, 255, 0.32),
+    134px 439px 0 rgba(255, 240, 210, 0.36),
+    374px 390px 0 rgba(255, 235, 200, 0.35),
+    861px 666px 0 rgba(255, 220, 160, 0.38),
+    544px 187px 0 rgba(255, 255, 255, 0.3),
+    402px 739px 0 rgba(255, 240, 210, 0.36),
+    331px 529px 0 rgba(255, 220, 160, 0.4),
+    655px 388px 0 rgba(255, 235, 200, 0.35),
+    349px 519px 0 rgba(255, 240, 210, 0.36),
+    955px 461px 0 rgba(255, 220, 160, 0.38),
+    903px 356px 0 rgba(255, 255, 255, 0.32);
+}
+.stars-mid {
+  opacity: 0.72;
+  animation: starTwinkle 5.5s ease-in-out infinite alternate-reverse;
+  box-shadow:
+    1388px 113px 0 rgba(255, 240, 210, 0.36),
+    636px 175px 0 rgba(255, 220, 160, 0.38),
+    504px 840px 0 rgba(255, 255, 255, 0.3),
+    405px 468px 0 rgba(255, 220, 160, 0.4),
+    216px 174px 0 rgba(255, 235, 200, 0.35),
+    454px 214px 0 rgba(255, 220, 160, 0.38),
+    1337px 579px 0 rgba(255, 255, 255, 0.32),
+    19px 362px 0 rgba(255, 235, 200, 0.35),
+    132px 546px 0 rgba(255, 240, 210, 0.36),
+    523px 224px 0 rgba(255, 220, 160, 0.4),
+    54px 762px 0 rgba(255, 220, 160, 0.38),
+    530px 401px 0 rgba(255, 235, 200, 0.35),
+    159px 823px 0 rgba(255, 240, 210, 0.36),
+    125px 123px 0 rgba(255, 255, 255, 0.3),
+    542px 209px 0 rgba(255, 220, 160, 0.38),
+    119px 79px 0 rgba(255, 235, 200, 0.35),
+    810px 215px 0 rgba(255, 220, 160, 0.4),
+    578px 304px 0 rgba(255, 240, 210, 0.36);
+}
+.stars-far {
+  opacity: 0.72;
+  animation: starTwinkle 7s ease-in-out infinite alternate;
+  box-shadow:
+    896px 743px 0 rgba(255, 255, 255, 0.3),
+    566px 85px 0 rgba(255, 220, 160, 0.38),
+    161px 598px 0 rgba(255, 235, 200, 0.35),
+    520px 552px 0 rgba(255, 220, 160, 0.36),
+    408px 421px 0 rgba(255, 240, 210, 0.34),
+    1131px 438px 0 rgba(255, 220, 160, 0.38),
+    435px 314px 0 rgba(255, 235, 200, 0.35),
+    327px 770px 0 rgba(255, 255, 255, 0.3),
+    723px 592px 0 rgba(255, 220, 160, 0.36),
+    698px 51px 0 rgba(255, 235, 200, 0.35),
+    304px 123px 0 rgba(255, 240, 210, 0.34),
+    1077px 74px 0 rgba(255, 220, 160, 0.38);
+}
+@keyframes starTwinkle {
+  from { filter: brightness(0.88); }
+  to { filter: brightness(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stars-near, .stars-mid, .stars-far { animation: none; }
+}
