@@ -48,7 +48,9 @@
 #burn-layer {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* Above slide text (deck ~10), below hatch/scan/grain (21–23)
+     so burn keeps the same paper texture instead of jumping to the top layer */
+  z-index: 15;
   pointer-events: none;
   overflow: visible;
 }
@@ -58,14 +60,21 @@
   display: block;
   pointer-events: none;
 }
+/* Burn sources: keep layout, fade chrome (cards/boxes) instead of hard pop */
+.fx-el.is-burn-fade {
+  opacity: 0 !important;
+  transition: opacity 0.55s ease-out !important;
+}
 .fx-el.is-burn-src {
-  visibility: hidden !important;
+  /* text is on the burn canvas; fade whole el so box borders/bg go softly */
+  opacity: 0 !important;
+  transition: opacity 0.45s ease-out !important;
+  pointer-events: none !important;
 }
 .slide.is-leaving .ghost-word,
-.slide.is-leaving .ghost-num,
-.slide.is-leaving .frame {
+.slide.is-leaving .ghost-num {
   opacity: 0 !important;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.45s ease-out;
 }
 
 /* Outgoing DOM fade stays subtle — canvases carry the burn */
@@ -74,9 +83,9 @@
   animation-delay: var(--stagger, 0ms);
 }
 
+#hud-frame.frame,
 .frame {
   display: block !important;
-  z-index: 6;
 }
 
 .char, .word { display: inline; }
@@ -139,10 +148,8 @@ body.debug #fx-debug { display: block; }
   .fx-el.burn-in, .fx-el.burn-out, .slide.is-entering {
     animation: none !important;
   }
-  body.is-flipping .sky::after,
-  body.is-flipping .hero-radial,
-  body.is-flipping .horizon,
-  body.is-flipping .finale-bg {
-    animation: none !important;
+  .sky::before,
+  .sky::after {
+    transition: none !important;
   }
 }

@@ -18,13 +18,7 @@
   let locked = false;
 
   slides.forEach((s, i) => {
-    if (!s.querySelector(".frame")) {
-      const fr = document.createElement("div");
-      fr.className = "frame";
-      fr.setAttribute("aria-hidden", "true");
-      fr.innerHTML = "<i></i><i></i><i></i><i></i>";
-      s.appendChild(fr);
-    }
+    // Gold corner HUD is global (#hud-frame) — don't inject per-slide frames
 
     const gw = document.createElement("div");
     gw.className = "ghost-word";
@@ -67,12 +61,54 @@
     document.body.classList.toggle("scene-finale", !!(s && (s.querySelector(".finale-bg") || s.classList.contains("finale"))));
   }
 
+  /** Per-slide rest pose in the night cloud — same palette, different vantage. */
+  function cloudPose(i) {
+    const a = i * 2.399963;
+    const b = i * 1.618034;
+    return {
+      cloudX: Math.sin(a) * 20,
+      cloudY: Math.cos(a * 0.87) * 15,
+      cloudS: 1.04 + (i % 4) * 0.025,
+      cloudHue: Math.sin(a) * 7,
+      cloudSat: 1 + Math.sin(b) * 0.1,
+      washX: Math.sin(a + 1.15) * 24,
+      washY: Math.cos(a + 0.65) * 17,
+      washS: 1.06 + (i % 3) * 0.03,
+      washHue: Math.sin(a + 0.4) * 9,
+      washSat: 1.02 + Math.cos(b) * 0.1,
+      washBri: 0.96 + (i % 5) * 0.02,
+    };
+  }
+
+  function setCloud(n, { instant = false } = {}) {
+    const sky = document.querySelector(".sky");
+    const root = document.documentElement;
+    const p = cloudPose(n);
+    if (instant && sky) sky.classList.add("is-cloud-snap");
+    root.style.setProperty("--cloud-x", `${p.cloudX.toFixed(2)}%`);
+    root.style.setProperty("--cloud-y", `${p.cloudY.toFixed(2)}%`);
+    root.style.setProperty("--cloud-s", p.cloudS.toFixed(3));
+    root.style.setProperty("--cloud-hue", `${p.cloudHue.toFixed(2)}deg`);
+    root.style.setProperty("--cloud-sat", p.cloudSat.toFixed(3));
+    root.style.setProperty("--wash-x", `${p.washX.toFixed(2)}%`);
+    root.style.setProperty("--wash-y", `${p.washY.toFixed(2)}%`);
+    root.style.setProperty("--wash-s", p.washS.toFixed(3));
+    root.style.setProperty("--wash-hue", `${p.washHue.toFixed(2)}deg`);
+    root.style.setProperty("--wash-sat", p.washSat.toFixed(3));
+    root.style.setProperty("--wash-bri", p.washBri.toFixed(3));
+    if (instant && sky) {
+      void sky.offsetWidth;
+      sky.classList.remove("is-cloud-snap");
+    }
+  }
+
   function paint(n) {
     slides.forEach((s, i) => {
       s.classList.toggle("active", i === n);
       if (i !== n) clearFx(s);
     });
     setScene(n);
+    setCloud(n, { instant: true });
   }
 
   function go(n, { hash = true, instant = false } = {}) {
@@ -100,6 +136,8 @@
     let finished = false;
     let inbound = false;
     document.body.classList.add("is-flipping");
+    // Drift the night cloud toward the destination slide's vantage
+    setCloud(n);
 
     const finish = () => {
       if (finished) return;

@@ -163,7 +163,7 @@ window.HisFx = (() => {
       `FPS ${fps}`,
       `stars ${stars.length}`,
       `embers ${embers.length}`,
-      `burn ${window.HisBurn?.busy ? "on" : "off"}`,
+      `burn ${window.HisBurn?.busy ? "on" : "off"}${window.HisBurn?.usingGpu ? "·gpu" : ""}`,
     ].join(" · ");
   }
 

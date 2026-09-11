@@ -39,19 +39,50 @@ html, body {
 .sky {
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(1200px 700px at 70% 20%, rgba(90, 30, 40, 0.45), transparent 55%),
-    radial-gradient(900px 500px at 10% 90%, rgba(40, 30, 80, 0.35), transparent 50%),
-    linear-gradient(#0a0814, #12080c 55%, #1a0c0c);
+  /* Solid night bed — moving color lives on ::before / ::after */
+  background: linear-gradient(#0a0814, #12080c 55%, #1a0c0c);
 }
+.sky::before,
 .sky::after {
   content: "";
   position: absolute;
-  inset: -32%;
-  background:
-    radial-gradient(ellipse 48% 44% at 74% 26%, rgba(226, 59, 47, 0.34), transparent 62%),
-    radial-gradient(ellipse 38% 42% at 16% 88%, rgba(224, 192, 120, 0.12), transparent 58%);
+  inset: -42%;
   pointer-events: none;
+  will-change: transform, filter;
+  transition:
+    transform 1.35s cubic-bezier(0.37, 0.02, 0.2, 1),
+    filter 1.35s ease;
+}
+/* Deep red / violet clouds — drift to a new rest pose each slide */
+.sky::before {
+  background:
+    radial-gradient(1200px 700px at 58% 42%, rgba(90, 30, 40, 0.48), transparent 56%),
+    radial-gradient(900px 520px at 42% 62%, rgba(40, 30, 80, 0.36), transparent 52%),
+    radial-gradient(780px 480px at 68% 58%, rgba(110, 35, 28, 0.22), transparent 55%);
+  transform:
+    translate3d(var(--cloud-x, 0%), var(--cloud-y, 0%), 0)
+    scale(var(--cloud-s, 1.05));
+  filter:
+    hue-rotate(var(--cloud-hue, 0deg))
+    saturate(var(--cloud-sat, 1));
+}
+/* Hot red / gold haze — same theme, offset path so it feels like depth */
+.sky::after {
+  background:
+    radial-gradient(ellipse 48% 44% at 50% 42%, rgba(226, 59, 47, 0.34), transparent 62%),
+    radial-gradient(ellipse 38% 42% at 46% 58%, rgba(224, 192, 120, 0.13), transparent 58%),
+    radial-gradient(ellipse 30% 28% at 54% 48%, rgba(180, 40, 30, 0.16), transparent 60%);
+  transform:
+    translate3d(var(--wash-x, 0%), var(--wash-y, 0%), 0)
+    scale(var(--wash-s, 1.08));
+  filter:
+    hue-rotate(var(--wash-hue, 0deg))
+    saturate(var(--wash-sat, 1))
+    brightness(var(--wash-bri, 1));
+}
+.sky.is-cloud-snap::before,
+.sky.is-cloud-snap::after {
+  transition: none !important;
 }
 #amb { z-index: 1; }
 .mist {
@@ -246,12 +277,22 @@ html, body {
 }
 .slide.is-leaving .ghost-word,
 .slide.is-leaving .ghost-num,
-.slide.is-leaving .frame,
 .slide.is-leaving .hero-bg,
 .slide.is-leaving .finale-bg {
   opacity: 0;
   transition: opacity 0.16s linear;
 }
+
+/* Persistent gold HUD — lives outside slides so it never blinks on flip */
+#hud-frame.frame {
+  position: fixed;
+  inset: 1.6rem 1.7rem 1.6rem;
+  z-index: 17;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}
+.slide > .frame { display: none !important; }
 
 .frame {
   position: absolute;
@@ -1077,35 +1118,22 @@ kbd {
 .ov-num { display: block; font-size: 0.8rem; color: var(--gold); letter-spacing: 0.12em; margin-bottom: 0.35rem; }
 .ov-title { font-size: 1.05rem; line-height: 1.3; }
 
-body.is-flipping .sky::after {
-  animation: washTravel 0.95s ease-in-out both;
+/* Soft brightness lift mid-passage — no more wiggle-back-to-center */
+body.is-flipping .sky::before {
+  filter:
+    hue-rotate(var(--cloud-hue, 0deg))
+    saturate(calc(var(--cloud-sat, 1) * 1.12))
+    brightness(1.06);
 }
-body.is-flipping .hero-radial {
-  animation: radialTravel 0.95s ease-in-out both;
+body.is-flipping .sky::after {
+  filter:
+    hue-rotate(var(--wash-hue, 0deg))
+    saturate(calc(var(--wash-sat, 1) * 1.18))
+    brightness(calc(var(--wash-bri, 1) * 1.1));
 }
 body.is-flipping .horizon {
-  animation: horizonTravel 0.95s ease-in-out both;
-}
-body.is-flipping .finale-bg {
-  animation: radialTravel 0.95s ease-in-out both;
-}
-@keyframes washTravel {
-  0% { transform: translate3d(0, 0, 0) scale(1); filter: saturate(1) brightness(1); }
-  28% { transform: translate3d(-10%, 8%, 0) scale(1.14); filter: saturate(1.4) brightness(1.22); }
-  52% { transform: translate3d(12%, -6%, 0) scale(1.08); filter: saturate(1.15) brightness(0.88) hue-rotate(10deg); }
-  78% { transform: translate3d(-4%, 3%, 0) scale(1.04); filter: saturate(1.2) brightness(1.08); }
-  100% { transform: translate3d(0, 0, 0) scale(1); filter: none; }
-}
-@keyframes radialTravel {
-  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
-  40% { transform: translate3d(-14%, 10%, 0) scale(1.18); opacity: 1; }
-  70% { transform: translate3d(10%, -8%, 0) scale(1.08); opacity: 0.9; }
-  100% { transform: translate3d(0, 0, 0) scale(1.04); opacity: 1; }
-}
-@keyframes horizonTravel {
-  0% { opacity: 0.8; filter: saturate(1); }
-  40% { opacity: 1; filter: saturate(1.45) brightness(1.2); }
-  100% { opacity: 0.9; filter: saturate(1.1); }
+  filter: saturate(1.25) brightness(1.08);
+  transition: filter 0.7s ease;
 }
 
 @media (max-width: 1200px) {
