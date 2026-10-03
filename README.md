@@ -1,5 +1,5 @@
 # History
-
+# THIS REPO WAS CREATED AS A SCHOOL PROJECT. IF YOU AREN'T INVOLVED, IT WILL NOT BE OF MUCH HELP, CLOSE IT.
 Bộ slide lịch sử chạy bằng Electron — trời đêm cháy đỏ, chữ bốc cháy (WebGL) khi chuyển slide.
 
 ## Chạy
