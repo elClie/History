@@ -44,7 +44,7 @@
     <div class="row">
       <select id="palette">
         <option value="photo">Bảng màu ảnh gốc</option>
-        <option value="histml">Bảng màu HisTML</option>
+        <option value="history">Bảng màu History</option>
       </select>
     </div>
     <div class="row">
@@ -140,7 +140,7 @@
   <script>
     const PALETTES = {
       photo:  { darkA: "#202229", darkB: "#4c505e", light: "#c8c9ce", rim: "#ffffff", glow: "#9fb8ff" },
-      histml: { darkA: "#0a0814", darkB: "#4a1a1c", light: "#e9dcc4", rim: "#ffd27a", glow: "#ff7a2a" },
+      history: { darkA: "#0a0814", darkB: "#4a1a1c", light: "#e9dcc4", rim: "#ffd27a", glow: "#ff7a2a" },
     };
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 

@@ -11,7 +11,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 640,
     backgroundColor: "#05040a",
-    title: "HisTML",
+    title: "History",
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

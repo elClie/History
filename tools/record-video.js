@@ -1,4 +1,4 @@
-/* Walkthrough video for the presenter: `npm run record` → dist/HisTML-walkthrough.mp4
+/* Walkthrough video for the presenter: `npm run record` → dist/History-walkthrough.mp4
    Plays the whole deck with real transitions: → after every click once its effects have finished + HOLD ms.
    Renders offscreen at 1440×900, encodes small (OUT_W×OUT_H, FPS, x264 CRF) with ffmpeg-static. */
 const { app, BrowserWindow } = require("electron");
@@ -15,7 +15,7 @@ const FPS = 24;
 const CRF = 30;
 const HOLD = 1000;
 const ROOT = path.join(__dirname, "..");
-const OUT = path.join(ROOT, "dist", "HisTML-walkthrough.mp4");
+const OUT = path.join(ROOT, "dist", "History-walkthrough.mp4");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

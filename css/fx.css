@@ -1,4 +1,4 @@
-/* HisTML · transition fx — WebGL glyph burn overlay (js/burn.js), burn-in glow, CRT entrance.
+/* History · transition fx — WebGL glyph burn overlay (js/burn.js), burn-in glow, CRT entrance.
    Never animate opacity/visibility on .slide or toggle will-change here: both caused black/blank frames in Electron. */
 
 /* ===== glyph burn ===== */

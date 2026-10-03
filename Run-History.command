@@ -1,11 +1,11 @@
 #!/bin/bash
-# HisTML macOS launcher — double-click in Finder
-# First time only:  chmod +x Run-HisTML.command
+# History macOS launcher — double-click in Finder
+# First time only:  chmod +x Run-History.command
 set -euo pipefail
 cd "$(dirname "$0")"
 
 echo "========================================"
-echo "  HisTML"
+echo "  History"
 echo "========================================"
 echo
 
@@ -44,7 +44,7 @@ ensure_node() {
 
   if ! have_cmd node || ! have_cmd npm; then
     echo "Node still not on PATH. Open a new Terminal and run:"
-    echo "  cd \"$(pwd)\" && ./Run-HisTML.command"
+    echo "  cd \"$(pwd)\" && ./Run-History.command"
     echo "Press Enter to close..."
     read -r _
     exit 1
@@ -87,7 +87,7 @@ ensure_node
 ensure_deps
 
 echo
-echo "Starting HisTML (high-perf GPU / no background throttle)..."
+echo "Starting History (high-perf GPU / no background throttle)..."
 echo "If macOS blocks Electron:"
 echo "  System Settings -> Privacy & Security -> Open Anyway"
 echo

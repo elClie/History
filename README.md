@@ -1,4 +1,4 @@
-# HisTML
+# History
 
 Bộ slide lịch sử chạy bằng Electron — trời đêm cháy đỏ, chữ bốc cháy (WebGL) khi chuyển slide.
 
@@ -10,14 +10,14 @@ npm run fonts        # lần đầu — tải font về fonts/ (cần mạng)
 npm start            # mở app (cờ GPU hiệu năng cao, không throttle nền)
 ```
 
-Hoặc double-click `Run-HisTML.command` (macOS) / `Run-HisTML.bat` (Windows).
+Hoặc double-click `Run-History.command` (macOS) / `Run-History.bat` (Windows).
 Xem nhanh trên trình duyệt: `npm run web` → http://127.0.0.1:8766
 
 Xuất bản xem trước (ra thư mục `dist/`, không đưa lên git):
 
 ```bash
-npm run export       # dist/HisTML-preview.pdf — mỗi click một trang, đã gộp trang trùng
-npm run record       # dist/HisTML-walkthrough.mp4 — video 960×600 chạy hết hiệu ứng
+npm run export       # dist/History-preview.pdf — mỗi click một trang, đã gộp trang trùng
+npm run record       # dist/History-walkthrough.mp4 — video 960×600 chạy hết hiệu ứng
 ```
 
 ## Điều khiển
@@ -39,7 +39,7 @@ npm run record       # dist/HisTML-walkthrough.mp4 — video 960×600 chạy h�
 - Lời nói gợi ý chỉ để tham khảo, không cần đọc y nguyên.
 - 🆕 = phần mới thêm hoặc đã sửa so với bản trước.
 - Tổng: **32 slide**. Chỉ tính hiệu ứng thì mất khoảng 5 phút. Cộng thời gian nói thì khoảng **15–20 phút**.
-- Xem trước: video `dist/HisTML-walkthrough.mp4` và PDF `dist/HisTML-preview.pdf`.
+- Xem trước: video `dist/History-walkthrough.mp4` và PDF `dist/History-preview.pdf`.
 
 ---
 

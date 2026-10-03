@@ -1,8 +1,8 @@
 {
-  "name": "histml",
+  "name": "history",
   "version": "2.0.0",
   "private": true,
-  "description": "HisTML — Vietnamese history slide deck (Electron)",
+  "description": "History — Vietnamese history slide deck (Electron)",
   "main": "electron/main.js",
   "scripts": {
     "start": "electron . --force_high_performance_gpu --disable-renderer-backgrounding --disable-background-timer-throttling --disable-backgrounding-occluded-windows --js-flags=--max-old-space-size=4096",

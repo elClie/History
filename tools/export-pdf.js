@@ -1,4 +1,4 @@
-/* Click-by-click PDF preview: `npm run export` → dist/HisTML-preview.pdf
+/* Click-by-click PDF preview: `npm run export` → dist/History-preview.pdf
    Every slide is shot on arrival and after each → through its stepper (no burn transition: slides are reached
    via #N); all frames land in dist/frames/. The PDF keeps only the clicks that show something new (see keepOf);
    `npm run export -- --pdf-only` rebuilds it from the frames already there. */
@@ -13,7 +13,7 @@ const SETTLE_STEP = 2400;
 const ROOT = path.join(__dirname, "..");
 const DIST = path.join(ROOT, "dist");
 const FRAMES = path.join(DIST, "frames");
-const PDF = path.join(DIST, "HisTML-preview.pdf");
+const PDF = path.join(DIST, "History-preview.pdf");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const frameName = (slide, click) => `s${String(slide + 1).padStart(2, "0")}-${String(click).padStart(2, "0")}.jpg`;
