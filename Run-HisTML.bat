@@ -29,7 +29,7 @@ rem path.txt MUST be exactly "electron.exe" with no CR/LF (Windows Electron bug)
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "[System.IO.File]::WriteAllText((Join-Path (Get-Location) 'node_modules\electron\path.txt'), 'electron.exe')"
 
-echo Starting HisTML...
+echo Starting HisTML (high-perf GPU / no background throttle)...
 call %NPM% start
 set "ERR=%ERRORLEVEL%"
 if not "%ERR%"=="0" (

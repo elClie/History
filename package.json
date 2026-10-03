@@ -1,16 +1,18 @@
 {
   "name": "histml",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "HisTML — Bài 6 desktop slide deck",
+  "description": "HisTML — Vietnamese history slide deck (Electron)",
   "main": "electron/main.js",
   "scripts": {
-    "start": "electron .",
-    "app": "electron .",
-    "demo:method2": "electron . -- --demo=method2",
-    "web": "python -m http.server 8766 --bind 127.0.0.1"
+    "start": "electron . --force_high_performance_gpu --disable-renderer-backgrounding --disable-background-timer-throttling --disable-backgrounding-occluded-windows --js-flags=--max-old-space-size=4096",
+    "fonts": "python3 tools/fetch-fonts.py",
+    "export": "electron tools/export-pdf.js --disable-renderer-backgrounding --disable-background-timer-throttling",
+    "record": "electron tools/record-video.js --disable-renderer-backgrounding --disable-background-timer-throttling",
+    "web": "python3 -m http.server 8766 --bind 127.0.0.1"
   },
   "devDependencies": {
-    "electron": "^33.2.0"
+    "electron": "^33.2.0",
+    "ffmpeg-static": "^5.3.0"
   }
 }

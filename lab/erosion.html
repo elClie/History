@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab · Erosion</title>
+  <link rel="stylesheet" href="../css/fonts.css" />
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: #f4ead8; font-family: "Be Vietnam Pro", system-ui, sans-serif; }
+    canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    .panel {
+      position: fixed; left: 16px; bottom: 16px; width: 300px; padding: 14px 16px;
+      background: rgba(8, 6, 12, 0.82); border: 1px solid rgba(224, 192, 120, 0.35);
+      font-size: 13px; display: grid; gap: 9px; backdrop-filter: blur(8px);
+    }
+    .panel[hidden] { display: none; }
+    .panel h1 { margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #e0c078; }
+    .panel label { display: grid; grid-template-columns: 92px 1fr 36px; align-items: center; gap: 8px; }
+    .panel output { text-align: right; color: #9a8b78; font-variant-numeric: tabular-nums; }
+    .panel input[type=range] { width: 100%; accent-color: #e0c078; }
+    .row { display: flex; gap: 8px; }
+    button, select {
+      flex: 1; padding: 6px 8px; font: inherit; color: #f4ead8; cursor: pointer;
+      background: rgba(224, 192, 120, 0.1); border: 1px solid rgba(224, 192, 120, 0.4);
+    }
+    button:hover { background: rgba(224, 192, 120, 0.22); }
+    .hint { color: #9a8b78; font-size: 11px; }
+    .ref { position: fixed; right: 16px; top: 16px; width: 360px; border: 1px solid rgba(224, 192, 120, 0.35); display: none; }
+    body.show-ref .ref { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <img class="ref" src="erosion-ref.jpg" alt="Ảnh mẫu" />
+
+  <div class="panel">
+    <h1>Erosion lab</h1>
+    <label>Tiến độ <input id="prog" type="range" min="0" max="1" step="0.001" value="0" /><output id="progOut"></output></label>
+    <label>Thời gian (s) <input id="dur" type="range" min="3" max="20" step="0.5" value="9" /><output id="durOut"></output></label>
+    <label>Độ lởm chởm <input id="rough" type="range" min="0.2" max="2" step="0.05" value="1" /><output id="roughOut"></output></label>
+    <label>Mép cháy <input id="rim" type="range" min="0" max="1" step="0.05" value="0.9" /><output id="rimOut"></output></label>
+    <label>Phát sáng <input id="glow" type="range" min="0" max="1.5" step="0.05" value="0.8" /><output id="glowOut"></output></label>
+    <label>Hạt pixel <input id="pix" type="range" min="1" max="4" step="1" value="1" /><output id="pixOut"></output></label>
+    <div class="row">
+      <select id="palette">
+        <option value="photo">Bảng màu ảnh gốc</option>
+        <option value="histml">Bảng màu HisTML</option>
+      </select>
+    </div>
+    <div class="row">
+      <button id="play">Tạm dừng</button>
+      <button id="replay">Chạy lại</button>
+      <button id="refBtn">Ảnh mẫu</button>
+    </div>
+    <div class="hint">Space: dừng/chạy · R: chạy lại · H: ẩn bảng · kéo "Tiến độ" để tua</div>
+  </div>
+
+  <script id="frag" type="x-shader/x-fragment">
+    precision highp float;
+    uniform vec2 uRes;
+    uniform float uTime, uProg, uRough, uRim, uPix, uGlow;
+    uniform vec3 uDarkA, uDarkB, uLight, uRimCol, uGlowCol;
+
+    float hash(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
+    float noise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+                 mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+    }
+    float fbm(vec2 p) {
+      float v = 0.0, a = 0.5;
+      mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+      for (int i = 0; i < 6; i++) { v += a * noise(p); p = m * p; a *= 0.5; }
+      return v;
+    }
+
+    void main() {
+      vec2 frag = gl_FragCoord.xy;
+      // Edge is evaluated on a coarse pixel grid -> crunchy, photographic fringe
+      vec2 fp = (floor(frag / uPix) + 0.5) * uPix;
+      vec2 uv = fp / uRes;
+      vec2 p = vec2(uv.x * uRes.x / uRes.y, uv.y);
+      float t = uTime;
+
+      // Erosion front: big lobes along x + hanging drips + fine fray, all slowly crawling
+      float lobes = (fbm(vec2(p.x * 1.3, 3.1 + t * 0.03)) - 0.5) * 0.38;
+      vec2 w = vec2(fbm(p * 3.0 + vec2(0.0, t * 0.05)), fbm(p * 3.0 + vec2(7.3, -t * 0.04)));
+      float drips = (fbm(vec2(p.x * 7.0, p.y * 1.4) + w * 1.2) - 0.5) * 0.34;
+      float fray = (fbm(p * 28.0 + w * 2.0) - 0.5) * 0.1;
+      float crumb = (noise(fp * 0.35 + w * 6.0) - 0.5) * 0.035;      // pixel-level crumbs + islands
+      float front = mix(-0.3, 1.3, uProg);
+      float softField = uv.y - front - (lobes + drips + fray) * uRough;
+      float field = softField - crumb * uRough;   // < 0 = eaten
+
+      // Dark layer: woven mesh + fine moire threads + crumbly grain + twinkling specks
+      vec2 q = frag;
+      float mesh = 0.5 + 0.5 * sin(q.x * 2.2) * sin(q.y * 2.2);
+      float moire = 0.5 + 0.5 * sin(q.y * 0.85 + sin(q.x * 0.005 + t * 0.1) * 14.0 + fbm(q * 0.004) * 8.0);
+      float grain = fbm(q * 0.06) * 0.6 + noise(q * 0.45) * 0.4;
+      vec3 dark = mix(uDarkA, uDarkB, grain * 0.8 + moire * 0.16);
+      dark *= 0.82 + 0.18 * mesh;
+      float sp = hash(floor(q / 2.0));
+      dark += step(0.9976, sp) * (0.55 + 0.45 * sin(t * 3.0 + sp * 60.0)) * 0.8;
+
+      // Eaten layer: flat soft surface, brighter right behind the front, debris specks near the edge
+      float behind = -field;
+      vec3 light = uLight * (0.95 + 0.06 * fbm(q * 0.008));
+      light = mix(light, vec3(1.0), (1.0 - smoothstep(0.0, 0.035, behind)) * 0.28);
+      float debris = step(0.9, noise(fp * 0.22 + 11.0)) * (1.0 - smoothstep(0.0, 0.09, behind));
+      light = mix(light, dark * 1.3, debris * 0.85);
+
+      vec3 col = field < 0.0 ? light : dark;
+
+      // Hot rim: broken white flecks on the dark side of the boundary, plus a thin solid lip
+      float rimBand = step(0.0, field) * (1.0 - smoothstep(0.0, 0.016, field));
+      float fleck = step(0.5, noise(fp * 0.6 + t * 0.8));
+      float lip = step(0.0, field) * (1.0 - smoothstep(0.0, 0.0035, field));
+      float rimMask = max(rimBand * fleck, lip * 0.85) * uRim;
+      col = mix(col, uRimCol, rimMask);
+
+      // Edge glow: wide halo into the dark side, tight lip on the eaten side, flickering along the front.
+      // Uses the crumb-free field so the halo stays soft while the edge itself stays crunchy.
+      float flicker = 0.7 + 0.6 * noise(vec2(p.x * 7.0, t * 1.6)) * noise(vec2(p.x * 2.3 - t * 0.4, 5.0));
+      float halo = exp(-max(softField, 0.0) / 0.045) * step(0.0, softField);
+      float core = exp(-abs(softField) / 0.008);
+      float eatenLip = exp(-max(-softField, 0.0) / 0.014) * step(softField, 0.0);
+      float glow = (halo * 0.75 + core * 0.9 + eatenLip * 0.35) * flicker;
+      col += uGlowCol * glow * uGlow;
+      col += uGlowCol * rimMask * 0.6 * uGlow;
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  </script>
+
+  <script>
+    const PALETTES = {
+      photo:  { darkA: "#202229", darkB: "#4c505e", light: "#c8c9ce", rim: "#ffffff", glow: "#9fb8ff" },
+      histml: { darkA: "#0a0814", darkB: "#4a1a1c", light: "#e9dcc4", rim: "#ffd27a", glow: "#ff7a2a" },
+    };
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+
+    const canvas = document.getElementById("gl");
+    const gl = canvas.getContext("webgl", { antialias: false });
+    const vsSrc = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
+    function shader(type, src) {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+      return s;
+    }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, shader(gl.VERTEX_SHADER, vsSrc));
+    gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, document.getElementById("frag").textContent));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    const U = {};
+    ["uRes", "uTime", "uProg", "uRough", "uRim", "uPix", "uGlow", "uDarkA", "uDarkB", "uLight", "uRimCol", "uGlowCol"]
+      .forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
+
+    const $ = (id) => document.getElementById(id);
+    const ui = { prog: $("prog"), dur: $("dur"), rough: $("rough"), rim: $("rim"), glow: $("glow"), pix: $("pix") };
+    let playing = true, progress = 0, hold = 0, time = 0, last = performance.now();
+
+    function resize() {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    function setPalette(name) {
+      const p = PALETTES[name];
+      gl.uniform3fv(U.uDarkA, hex(p.darkA));
+      gl.uniform3fv(U.uDarkB, hex(p.darkB));
+      gl.uniform3fv(U.uLight, hex(p.light));
+      gl.uniform3fv(U.uRimCol, hex(p.rim));
+      gl.uniform3fv(U.uGlowCol, hex(p.glow));
+    }
+    function syncOutputs() {
+      for (const k in ui) $(k + "Out").textContent = (+ui[k].value).toFixed(k === "pix" ? 0 : 2).replace(/\.00$/, "");
+    }
+    function setPlaying(on) {
+      playing = on;
+      $("play").textContent = on ? "Tạm dừng" : "Chạy";
+    }
+
+    function frame(now) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (playing) {
+        time += dt;
+        if (progress >= 1) {
+          hold += dt;
+          if (hold > 1.2) { progress = 0; hold = 0; }
+        } else {
+          progress = Math.min(1, progress + dt / +ui.dur.value);
+        }
+        ui.prog.value = progress;
+      }
+      syncOutputs();
+      gl.uniform2f(U.uRes, canvas.width, canvas.height);
+      gl.uniform1f(U.uTime, time);
+      gl.uniform1f(U.uProg, progress);
+      gl.uniform1f(U.uRough, +ui.rough.value);
+      gl.uniform1f(U.uRim, +ui.rim.value);
+      gl.uniform1f(U.uPix, +ui.pix.value);
+      gl.uniform1f(U.uGlow, +ui.glow.value);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(frame);
+    }
+
+    ui.prog.addEventListener("input", () => { setPlaying(false); progress = +ui.prog.value; });
+    $("play").addEventListener("click", () => setPlaying(!playing));
+    $("replay").addEventListener("click", () => { progress = 0; hold = 0; setPlaying(true); });
+    $("refBtn").addEventListener("click", () => document.body.classList.toggle("show-ref"));
+    $("palette").addEventListener("change", (e) => setPalette(e.target.value));
+    addEventListener("keydown", (e) => {
+      if (e.key === " ") { e.preventDefault(); setPlaying(!playing); }
+      if (e.key === "r" || e.key === "R") { progress = 0; hold = 0; setPlaying(true); }
+      if (e.key === "h" || e.key === "H") { const panel = document.querySelector(".panel"); panel.hidden = !panel.hidden; }
+    });
+    addEventListener("resize", resize);
+
+    resize();
+    setPalette("photo");
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

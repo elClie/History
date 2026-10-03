@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 echo "========================================"
-echo "  HisTML - Cach mang thang Tam 1945"
+echo "  HisTML"
 echo "========================================"
 echo
 
@@ -87,7 +87,7 @@ ensure_node
 ensure_deps
 
 echo
-echo "Starting HisTML..."
+echo "Starting HisTML (high-perf GPU / no background throttle)..."
 echo "If macOS blocks Electron:"
 echo "  System Settings -> Privacy & Security -> Open Anyway"
 echo
