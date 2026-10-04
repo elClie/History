@@ -59,7 +59,8 @@ void main() {
   }
 
   float I = mix(0.55, 1.4, uFocus) * (1.0 - 0.55 * uDim) * (1.0 + uBurn * (1.0 - uBurn) * 4.0);
-  vec3 glow = mix(uTint, vec3(1.0), uFocus * 0.3) * glowAmt(e.y, k, 0.6, 0.5) * flicker(l, uSeed) * I;
+  float g = glowAmt(e.y, k, 0.6, 0.5);
+  vec3 glow = g > 0.002 ? mix(uTint, vec3(1.0), uFocus * 0.3) * g * flicker(l, uSeed) * I : vec3(0.0);
   float sp = hash(floor(s / 2.0) + uSeed * 31.0);
   float ember = step(0.994, sp) * step(-k * 1.6, e.y) * step(e.y, 0.0);
   glow += mix(uTint, vec3(1.0), 0.4) * ember * (0.5 + 0.5 * sin(t * 4.0 + sp * 80.0)) * I;

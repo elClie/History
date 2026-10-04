@@ -73,12 +73,8 @@ void main() {
   vec2 lf = toLocal(s, uFrame);
   float Ef = 30.0 + hide * (uFrame.w + 40.0);
   vec2 ef = edge(s, lf, uFrame.zw, Ef, 0.37, 80.0);
-  if (ef.x > 0.0) {
-    col = frameTex(s);
-    a = 0.9;
-    col = mix(col, mix(ft, vec3(1.0), 0.5), rimMask(s, ef.x, 5.0) * 0.7);
-  }
-  glow += ft * glowAmt(ef.y, 16.0, 0.75, 0.35) * flicker(lf, 0.37) * 0.5;
+  float gf = glowAmt(ef.y, 16.0, 0.75, 0.35);
+  if (gf > 0.002) glow += ft * gf * flicker(lf, 0.37) * 0.5;
 
   for (int i = 0; i < N; i++) {
     if (float(i) >= uCount) break;
@@ -99,13 +95,19 @@ void main() {
       a = 1.0;
       col = mix(col, mix(tint, vec3(1.0), 0.55), rimMask(s, e.x, mix(4.0, 7.0, focus)) * (1.0 - 0.5 * st.y));
     }
-    float fl = flicker(l, st.w);
-    glow += mix(tint, vec3(1.0), focus * 0.35) * glowAmt(e.y, k, 0.45, 0.6) * fl * I;
+    float g = glowAmt(e.y, k, 0.45, 0.6);
+    if (g > 0.002) glow += mix(tint, vec3(1.0), focus * 0.35) * g * flicker(l, st.w) * I;
     float sp = hash(floor(s / 2.0) + st.w * 31.0);
     float ember = step(0.994, sp) * step(-k * 1.6, e.y) * step(e.y, 0.0);
     glow += mix(tint, vec3(1.0), 0.4) * ember * (0.5 + 0.5 * sin(t * 4.0 + sp * 80.0)) * I;
 
     if (p >= 0.0) glow += mix(tint, vec3(1.0), 0.5) * shock(s, l, e.y, p, b.z * 1.2, st.w);
+  }
+  // Frame sits under the portraits: only pay for its noise texture where no photo covered the pixel
+  if (a < 1.0 && ef.x > 0.0) {
+    col = frameTex(s);
+    a = 0.9;
+    col = mix(col, mix(ft, vec3(1.0), 0.5), rimMask(s, ef.x, 5.0) * 0.7);
   }
   glow *= bleedFade(s, uRes, ${BLEED}.0);
 

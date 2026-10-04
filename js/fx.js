@@ -20,7 +20,7 @@ window.HisFx = (() => {
   let fps = 0, frames = 0, fpsT = 0;
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     W = stage.clientWidth || innerWidth;
     H = stage.clientHeight || innerHeight;
     for (const c of [amb, sparks]) {
@@ -193,6 +193,7 @@ window.HisFx = (() => {
   }
 
   let last = performance.now();
+  let ambDt = 0, ambOdd = false;
   function tick(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
@@ -204,7 +205,13 @@ window.HisFx = (() => {
       frames = 0;
       fpsT = 0;
     }
-    drawAmb(dt);
+    // Stars only twinkle — half rate is invisible and halves the canvas upload
+    ambDt += dt;
+    ambOdd = !ambOdd;
+    if (!ambOdd) {
+      drawAmb(ambDt);
+      ambDt = 0;
+    }
     drawSparks(dt);
     drawDebug();
     requestAnimationFrame(tick);

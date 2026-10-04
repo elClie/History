@@ -47,35 +47,51 @@ void main() {
   float land = m.r;
   float soft = m.g;
   vec2 p = s / uScale;
-  float warp = fbm(p * 0.03 + vec2(0.0, uTime * 0.06), 4) - 0.5;
+  // Everything built on warp/flame is multiplied by land: the sea skips both fbm passes.
+  // warp is in [-0.5, 0.44], so a town can only light pixels within 1.53 * radius; its glow is < 0.003 past 4.64 * radius.
+  bool onLand = land > 0.002;
+  float warp = 0.0;
+  bool hasWarp = false;
 
   float f = 0.0;
   float near = 0.0;
   for (int i = 0; i < NP; i++) {
     if (i >= uCount) break;
     vec4 q = uPt[i];
-    if (q.z <= 0.0) continue;
     float d = length(s - q.xy);
+    if (d > q.z * 4.64 + 5.8) continue;
+    near = max(near, q.w * exp(-d / (q.z * 0.8 + 1.0)));
+    if (!onLand || d > q.z * 1.53) continue;
+    if (!hasWarp) {
+      warp = fbm(p * 0.03 + vec2(0.0, uTime * 0.06), 4) - 0.5;
+      hasWarp = true;
+    }
     float dd = d + warp * q.z * 0.95;
     f = max(f, q.w * (1.0 - smoothstep(q.z * 0.5, q.z * 1.05, dd)));
-    near = max(near, q.w * exp(-d / (q.z * 0.8 + 1.0)));
   }
-  if (uAll > 0.0) f = max(f, clamp(uAll * 1.7 - 0.45 + warp * 1.1, 0.0, 1.0));
+  if (onLand && uAll > 0.0) {
+    if (!hasWarp) warp = fbm(p * 0.03 + vec2(0.0, uTime * 0.06), 4) - 0.5;
+    f = max(f, clamp(uAll * 1.7 - 0.45 + warp * 1.1, 0.0, 1.0));
+  }
 
-  float lit = smoothstep(0.46, 0.54, f) * land;
-  float rim = exp(-pow((f - 0.5) / 0.09, 2.0)) * land;
-  float flame = fbm(p * 0.07 + vec2(warp * 2.0, uTime * 0.8), 4);
   vec3 deep = vec3(0.30, 0.03, 0.02);
   vec3 hot = vec3(1.0, 0.40, 0.07);
   vec3 white = vec3(1.0, 0.86, 0.56);
 
-  float core = smoothstep(0.55, 1.0, f);
-  vec3 col = mix(deep, hot, smoothstep(0.2, 0.7, flame)) * lit * (0.8 + 0.9 * flame);
-  col += mix(hot, white, 0.5) * core * lit * flame * 0.8;
-  col += white * rim * (1.3 + 0.9 * flame);
-  col += hot * smoothstep(0.04, 0.45, f) * (1.0 - lit) * land * (0.45 + 1.0 * flame);
-  float sp = hash(floor(s / 2.0) + floor(uTime * 9.0) * 7.0);
-  col += white * step(0.99, sp) * lit * 1.6;
+  float lit = 0.0;
+  vec3 col = vec3(0.0);
+  if (onLand && f > 0.0) {
+    lit = smoothstep(0.46, 0.54, f) * land;
+    float rim = exp(-pow((f - 0.5) / 0.09, 2.0)) * land;
+    float flame = fbm(p * 0.07 + vec2(warp * 2.0, uTime * 0.8), 4);
+    float core = smoothstep(0.55, 1.0, f);
+    col = mix(deep, hot, smoothstep(0.2, 0.7, flame)) * lit * (0.8 + 0.9 * flame);
+    col += mix(hot, white, 0.5) * core * lit * flame * 0.8;
+    col += white * rim * (1.3 + 0.9 * flame);
+    col += hot * smoothstep(0.04, 0.45, f) * (1.0 - lit) * land * (0.45 + 1.0 * flame);
+    float sp = hash(floor(s / 2.0) + floor(uTime * 9.0) * 7.0);
+    col += white * step(0.99, sp) * lit * 1.6;
+  }
   col += hot * near * (0.3 + soft * 0.7) * 0.7 * (1.0 - land * 0.6);
 
   for (int j = 0; j < 4; j++) {
@@ -357,14 +373,17 @@ void main() {
       if (stepper) apply(stepper, now);
       resize();
       let n = 0;
+      // Only burning towns go to the GPU — the shader loops over uCount for every pixel
       for (const t of towns) {
         if (n >= NP) break;
-        const o = n * 4;
         const age = (now - t.t0) / 1300;
         const grow = t.kind && age > 0 ? ease(age) : 0;
+        const r = t.kind === "lit" ? t.R * scale * grow : t.kind === "ember" ? 36 * scale * grow : 0;
+        if (r <= 0) continue;
+        const o = n * 4;
         pts[o] = (t.xy[0] - view[0]) * scale;
         pts[o + 1] = (t.xy[1] - view[1]) * scale;
-        pts[o + 2] = t.kind === "lit" ? t.R * scale * grow : t.kind === "ember" ? 36 * scale * grow : 0;
+        pts[o + 2] = r;
         pts[o + 3] = t.kind === "lit" ? 1 : 0.42;
         n++;
       }
