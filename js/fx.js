@@ -2,6 +2,7 @@
 window.HisFx = (() => {
   const amb = document.getElementById("amb");
   const sparks = document.getElementById("sparks");
+  const stage = document.getElementById("deck");
   const actx = amb.getContext("2d", { alpha: true });
   const xctx = sparks.getContext("2d", { alpha: true });
 
@@ -20,8 +21,8 @@ window.HisFx = (() => {
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = innerWidth;
-    H = innerHeight;
+    W = stage.clientWidth || innerWidth;
+    H = stage.clientHeight || innerHeight;
     for (const c of [amb, sparks]) {
       c.width = Math.floor(W * dpr);
       c.height = Math.floor(H * dpr);
@@ -215,7 +216,7 @@ window.HisFx = (() => {
   }
 
   window.addEventListener("keydown", (e) => {
-    if (e.key !== "d" && e.key !== "D") return;
+    if (e.code !== "Backquote") return;
     if (e.target && /input|textarea/i.test(e.target.tagName)) return;
     setDebug(!debug);
   });

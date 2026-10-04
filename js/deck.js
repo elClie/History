@@ -255,6 +255,9 @@
     } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
       e.preventDefault();
       prev();
+    } else if ((e.key === "d" || e.key === "D" || e.key === "a" || e.key === "A") && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      go(index + (e.key.toLowerCase() === "d" ? 1 : -1), { instant: true });
     } else if (e.key === "Home") {
       e.preventDefault();
       go(0);

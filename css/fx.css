@@ -58,7 +58,7 @@
 @keyframes crtFringe { from { opacity: 0.7; } to { opacity: 0; } }
 @keyframes crtScan { from { opacity: 0.45; } to { opacity: 0; } }
 
-/* ===== debug HUD (D key or ?debug) ===== */
+/* ===== debug HUD (` key or ?debug) ===== */
 #fx-debug {
   display: none;
   position: fixed;

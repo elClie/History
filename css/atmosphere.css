@@ -14,7 +14,7 @@
 .sky, #amb, #sparks, .mist, .horizon, .flame-bed, .smoke-blob,
 .vignette, .hatch, .scan, .grain {
   position: fixed;
-  inset: 0;
+  inset: var(--sy) var(--sx);
   pointer-events: none;
 }
 
@@ -83,7 +83,7 @@ body.is-flipping .sky::after {
 
 .flame-bed {
   inset: auto 0 0 0;
-  height: 22vh;
+  height: calc(22 * var(--vh));
   z-index: 3;
   opacity: 0.42;
   transform-origin: 50% 100%;
@@ -101,8 +101,8 @@ body.is-flipping .sky::after {
 .smoke-blob {
   inset: auto;
   z-index: 3;
-  width: 58vw;
-  height: 56vw;
+  width: calc(58 * var(--vw));
+  height: calc(56 * var(--vw));
   border-radius: 50%;
   filter: blur(52px);
   background: radial-gradient(ellipse at 42% 38%,
@@ -110,20 +110,20 @@ body.is-flipping .sky::after {
     rgba(22, 18, 16, 0.12) 76%, transparent 82%);
   animation: smokeDrift 22s ease-in-out infinite;
 }
-.smoke-blob.b1 { left: -14%; bottom: -20%; width: 64vw; height: 60vw; opacity: 0.16; animation-duration: 26s; }
+.smoke-blob.b1 { left: -14%; bottom: -20%; width: calc(64 * var(--vw)); height: calc(60 * var(--vw)); opacity: 0.16; animation-duration: 26s; }
 .smoke-blob.b2 {
-  right: -16%; bottom: -24%; width: 60vw; height: 56vw; opacity: 0.13;
+  right: -16%; bottom: -24%; width: calc(60 * var(--vw)); height: calc(56 * var(--vw)); opacity: 0.13;
   animation-duration: 19s; animation-delay: -7s;
   background: radial-gradient(ellipse at 58% 46%,
     rgba(82, 54, 40, 0.92) 0%, rgba(48, 34, 30, 0.62) 40%, rgba(28, 22, 20, 0.28) 68%, transparent 80%);
 }
 .smoke-blob.b3 {
-  left: 18%; bottom: -30%; width: 74vw; height: 42vw; opacity: 0.11;
+  left: 18%; bottom: -30%; width: calc(74 * var(--vw)); height: calc(42 * var(--vw)); opacity: 0.11;
   animation-duration: 30s; animation-delay: -12s;
   background: radial-gradient(ellipse at 50% 40%,
     rgba(70, 52, 44, 0.9) 0%, rgba(44, 34, 30, 0.55) 42%, rgba(24, 20, 18, 0.22) 70%, transparent 82%);
 }
-.smoke-blob.b4 { left: 8%; bottom: 8%; width: 36vw; height: 36vw; opacity: 0.12; animation-duration: 20s; animation-delay: -4s; }
+.smoke-blob.b4 { left: 8%; bottom: 8%; width: calc(36 * var(--vw)); height: calc(36 * var(--vw)); opacity: 0.12; animation-duration: 20s; animation-delay: -4s; }
 .smoke-blob.b5 { left: 0; top: 0; opacity: 0.19; }
 
 #sparks { z-index: 3; }

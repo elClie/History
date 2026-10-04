@@ -4,7 +4,7 @@
    becomes visible. .is-focus = stronger glow + shockwave, .is-dim = darker (deck.js sets both from steps).
    Attributes: data-focal="50% 30%" (object-position), data-tint="#ff8a3a" (glow colour). */
 (() => {
-  const BLEED = 56;
+  const BLEED = 120;
   const DEFAULT_TINT = "#ff8a3a";
 
   const FRAG = `
@@ -64,6 +64,7 @@ void main() {
   float ember = step(0.994, sp) * step(-k * 1.6, e.y) * step(e.y, 0.0);
   glow += mix(uTint, vec3(1.0), 0.4) * ember * (0.5 + 0.5 * sin(t * 4.0 + sp * 80.0)) * I;
   if (uShock >= 0.0) glow += mix(uTint, vec3(1.0), 0.5) * shock(s, l, e.y, uShock, min(hs.x, hs.y) * 1.2, uSeed);
+  glow *= bleedFade(s, uRes, ${BLEED}.0);
 
   vec3 rgb = min(col * a + glow, vec3(1.0));
   gl_FragColor = vec4(rgb, clamp(max(a, max(rgb.r, max(rgb.g, rgb.b))), 0.0, 1.0));

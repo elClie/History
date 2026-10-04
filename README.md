@@ -26,9 +26,10 @@ npm run record       # dist/History-walkthrough.mp4 — video 960×600 chạy h�
 | --- | --- |
 | → · Space · PageDown · click | Slide sau |
 | ← · PageUp · click mép trái | Slide trước |
+| D / A | Nhảy ngay sang slide sau / trước, bỏ qua hiệu ứng |
 | Home / End | Slide đầu / cuối |
 | F | Toàn màn hình |
-| D | Hiện FPS / debug |
+| `` ` `` | Hiện FPS / debug (hoặc thêm `?debug` vào URL) |
 | `#5` trên URL | Nhảy tới slide 5 |
 
 ## Kịch bản thuyết trình · Bài 6: Cách mạng tháng Tám năm 1945 · Nhóm 8
@@ -271,6 +272,8 @@ tools/record-video.js npm run record — video chạy thử
 ## Thêm slide
 
 Mỗi slide là một `<section class="slide">` trong `main#deck`.
+
+- Deck luôn giữ tỉ lệ 16:10 (thiết kế gốc 1440×900), màn hình khác tỉ lệ sẽ có viền đen. Kích thước dùng `rem`, `var(--vw)` / `var(--vh)` (1% khung slide) hoặc `calc(N * var(--px))` (N pixel thiết kế) — không dùng `vw` / `vh` trực tiếp.
 
 - `data-ghost` — chữ viền khổng lồ phía sau slide (mặc định lấy `data-title`).
 - Phần tử khớp `FX_SEL` trong `js/deck.js` sẽ cháy khi rời slide và phát sáng khi vào. Thêm class `reveal` cho phần tử khác muốn có hiệu ứng.

@@ -5,7 +5,7 @@
   const MAX = 6;
   const CELL_W = 600;
   const CELL_H = 800;
-  const BLEED = 64;
+  const BLEED = 120;
 
   const FRAG = `
 precision highp float;
@@ -107,6 +107,7 @@ void main() {
 
     if (p >= 0.0) glow += mix(tint, vec3(1.0), 0.5) * shock(s, l, e.y, p, b.z * 1.2, st.w);
   }
+  glow *= bleedFade(s, uRes, ${BLEED}.0);
 
   vec3 rgb = col * a + glow;
   float alpha = clamp(a + max(glow.r, max(glow.g, glow.b)) * 0.35, 0.0, 1.0);
@@ -184,6 +185,7 @@ void main() {
     canvas.className = "roster-fx";
     canvas.setAttribute("aria-hidden", "true");
     canvas.style.inset = `-${BLEED}px`;
+    canvas.style.width = canvas.style.height = `calc(100% + ${BLEED * 2}px)`;
     roster.prepend(canvas);
 
     const gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: true, alpha: true });

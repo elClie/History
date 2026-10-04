@@ -58,6 +58,13 @@ float rimMask(vec2 s, float field, float w) {
   return max(band * fleck, lip * 0.85);
 }
 
+// 0 at the canvas border → 1 at bleed px in. Multiply every glow by it: anything still lit at the border shows as a hard rectangle.
+float bleedFade(vec2 s, vec2 res, float bleed) {
+  vec2 m = clamp(min(s, res - s) / bleed, 0.0, 1.0);
+  m = m * m * (3.0 - 2.0 * m);
+  return m.x * m.y;
+}
+
 // Shockwave (p = 0..1): jagged ring racing outward + wave running inward from the edge
 float shock(vec2 s, vec2 l, float soft, float p, float inward, float seed) {
   float jit = (noise(l * 0.045 + seed * 9.0) - 0.5) * 28.0 + (noise(s * 0.3) - 0.5) * 4.0;

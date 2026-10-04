@@ -10,6 +10,16 @@
   --line: rgba(240, 217, 160, 0.18);
   --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
   --font-serif: "Literata", "Times New Roman", serif;
+
+  /* Stage: the 1440×900 design, letterboxed to the largest 16:10 box that fits. Size everything with
+     rem, --vw/--vh (1% of the stage) or --px (one design pixel) — never raw vw/vh. */
+  --sw: min(100vw, 160dvh);
+  --sh: calc(var(--sw) / 1.6);
+  --sx: calc((100vw - var(--sw)) / 2);
+  --sy: calc((100dvh - var(--sh)) / 2);
+  --vw: calc(var(--sw) / 100);
+  --vh: calc(var(--sh) / 100);
+  --px: calc(var(--sw) / 1440);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,15 +31,43 @@ html, body {
   color: var(--paper);
   font-family: var(--font-sans);
   /* Audience sits far from the projector — keep type large everywhere */
-  font-size: 22px;
+  font-size: calc(22 * var(--px));
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Black bars around the stage */
+body::after {
+  content: "";
+  position: fixed;
+  inset: var(--sy) var(--sx);
+  z-index: 1000;
+  box-shadow: 0 0 0 100vmax #000;
+  pointer-events: none;
+}
+@media (max-aspect-ratio: 1/1) {
+  body::before {
+    content: "↻  Xoay ngang màn hình để xem rõ hơn";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--sy) / 2);
+    z-index: 1001;
+    transform: translateY(50%);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: var(--muted);
+    pointer-events: none;
+  }
 }
 
 ::selection { background: var(--red); color: #fff; }
 
 /* ===== slide engine ===== */
-.deck { position: relative; width: 100%; height: 100%; outline: none; z-index: 10; }
+.deck { position: fixed; inset: var(--sy) var(--sx); outline: none; z-index: 10; }
 
 .slide {
   position: absolute;
@@ -37,7 +75,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3.2rem 5.5vw 3.8rem 4.5vw;
+  padding: 3.2rem calc(5.5 * var(--vw)) 3.8rem calc(4.5 * var(--vw));
   opacity: 0;
   visibility: hidden;
   overflow: hidden;
@@ -50,19 +88,19 @@ html, body {
 .slide.is-leaving .hero-bg,
 .slide.is-leaving .finale-bg { opacity: 0; transition: opacity 0.16s linear; }
 
-.slide-inner { width: min(1280px, 100%); margin: 0 auto; position: relative; z-index: 4; }
-.slide-inner.wide { width: min(1360px, 100%); }
-.slide-inner.narrow { width: min(980px, 100%); }
+.slide-inner { width: min(calc(1280 * var(--px)), 100%); margin: 0 auto; position: relative; z-index: 4; }
+.slide-inner.wide { width: min(calc(1360 * var(--px)), 100%); }
+.slide-inner.narrow { width: min(calc(980 * var(--px)), 100%); }
 
 /* ===== persistent chrome — outside slides so it never blinks on flip ===== */
 .frame {
   position: fixed;
-  inset: 1.6rem 1.7rem 1.6rem;
+  inset: calc(var(--sy) + 1.6rem) calc(var(--sx) + 1.7rem);
   z-index: 17;
   pointer-events: none;
   border: 1px solid rgba(224, 192, 120, 0.22);
 }
-.frame i { position: absolute; width: 28px; height: 28px; border: 2px solid var(--gold); }
+.frame i { position: absolute; width: calc(28 * var(--px)); height: calc(28 * var(--px)); border: 2px solid var(--gold); }
 .frame i:nth-child(1) { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
 .frame i:nth-child(2) { top: -1px; right: -1px; border-left: 0; border-bottom: 0; }
 .frame i:nth-child(3) { bottom: -1px; left: -1px; border-right: 0; border-top: 0; }
@@ -70,8 +108,8 @@ html, body {
 
 .side-script {
   position: fixed;
-  left: 1.8rem;
-  bottom: 0.4rem;
+  left: calc(var(--sx) + 1.8rem);
+  bottom: calc(var(--sy) + 0.4rem);
   margin: 0;
   z-index: 18;
   font-size: 0.56rem;
@@ -88,7 +126,7 @@ html, body {
   left: 3.5%;
   top: 10%;
   font-family: var(--font-serif);
-  font-size: clamp(5.5rem, 18vw, 14rem);
+  font-size: clamp(5.5rem, calc(18 * var(--vw)), 14rem);
   font-weight: 700;
   line-height: 0.82;
   letter-spacing: -0.05em;
@@ -105,7 +143,7 @@ html, body {
   right: 2%;
   bottom: 6%;
   font-family: var(--font-serif);
-  font-size: clamp(7rem, 22vw, 16rem);
+  font-size: clamp(7rem, calc(22 * var(--vw)), 16rem);
   font-weight: 700;
   line-height: 0.8;
   color: rgba(226, 59, 47, 0.09);
@@ -117,7 +155,7 @@ html, body {
 h1, h2, h3 { font-family: var(--font-serif); font-weight: 700; line-height: 1.08; }
 
 h1 {
-  font-size: clamp(4rem, 10vw, 8.2rem);
+  font-size: clamp(4rem, calc(10 * var(--vw)), 8.2rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   margin-bottom: 1.2rem;
@@ -125,7 +163,7 @@ h1 {
 h1 em { font-style: italic; color: var(--gold-soft); font-weight: 500; }
 
 h2 {
-  font-size: clamp(2.6rem, 5.9vw, 4.4rem);
+  font-size: clamp(2.6rem, calc(5.9 * var(--vw)), 4.4rem);
   margin-bottom: 1.1rem;
   letter-spacing: -0.03em;
   text-wrap: balance;
@@ -162,7 +200,7 @@ h2 {
 .subhead { color: var(--paper-dim); font-size: 1.28rem; margin: -0.4rem 0 1.6rem; }
 
 .body {
-  font-size: clamp(1.2rem, 1.85vw, 1.42rem);
+  font-size: clamp(1.2rem, calc(1.85 * var(--vw)), 1.42rem);
   line-height: 1.62;
   color: var(--paper-dim);
   max-width: 68ch;
@@ -170,7 +208,7 @@ h2 {
 .body strong { color: #fff; font-weight: 600; }
 
 .lede {
-  font-size: clamp(1.25rem, 2.3vw, 1.55rem);
+  font-size: clamp(1.25rem, calc(2.3 * var(--vw)), 1.55rem);
   color: var(--paper-dim);
   line-height: 1.5;
   max-width: 40ch;
@@ -179,7 +217,7 @@ h2 {
 
 .big-date {
   font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 3.7vw, 2.7rem);
+  font-size: clamp(1.8rem, calc(3.7 * var(--vw)), 2.7rem);
   color: var(--red);
   letter-spacing: 0.12em;
   margin-bottom: 0.2rem;
@@ -187,11 +225,3 @@ h2 {
 }
 
 .soft { color: var(--muted); }
-
-@media (max-width: 1200px) {
-  html { font-size: 20px; }
-}
-@media (max-width: 960px) {
-  .side-script { display: none; }
-  .slide { padding: 5rem 1.1rem 4.8rem; }
-}
