@@ -1,7 +1,7 @@
 /* Archival photos with eroded glowing edges — every <figure class="ero-photo"><img></figure> on the visible
    slide is drawn by ONE shared WebGL context, then copied into the figure's own 2D canvas (Chrome caps live
    GL contexts, so one-per-photo doesn't scale). Ink→gold duotone, film grain, edges grow in when the photo
-   becomes visible. .is-focus = stronger glow + shockwave, .is-dim = darker (deck.js sets both from steps).
+   becomes visible. .is-focus = stronger glow, .is-dim = darker (deck.js sets both from steps).
    Attributes: data-focal="50% 30%" (object-position), data-tint="#ff8a3a" (glow colour). */
 (() => {
   const BLEED = 120;
@@ -10,7 +10,7 @@
   const FRAG = `
 precision highp float;
 uniform vec2 uRes;
-uniform float uTime, uReveal, uFocus, uDim, uShock, uSeed, uBurn;
+uniform float uTime, uReveal, uFocus, uDim, uSeed, uBurn;
 uniform vec4 uBox;
 uniform vec2 uImg;
 uniform vec2 uFocal;
@@ -34,7 +34,6 @@ void main() {
   vec2 l = s - uBox.xy;
   float t = uTime;
   float E = mix(18.0, 30.0, uFocus) + (1.0 - uReveal) * (min(hs.x, hs.y) + 40.0);
-  if (uShock >= 0.0) E += sin(uShock * 3.14159) * 20.0;
   E += uBurn * (min(hs.x, hs.y) * 1.3 + 60.0);
   float k = mix(11.0, 22.0, uFocus) + uBurn * 14.0;
   vec2 e = edge(s, l, hs, E, uSeed, 5.0 * k);
@@ -64,7 +63,6 @@ void main() {
   float sp = hash(floor(s / 2.0) + uSeed * 31.0);
   float ember = step(0.994, sp) * step(-k * 1.6, e.y) * step(e.y, 0.0);
   glow += mix(uTint, vec3(1.0), 0.4) * ember * (0.5 + 0.5 * sin(t * 4.0 + sp * 80.0)) * I;
-  if (uShock >= 0.0) glow += mix(uTint, vec3(1.0), 0.5) * shock(s, l, e.y, uShock, min(hs.x, hs.y) * 1.2, uSeed);
   glow *= bleedFade(s, uRes, ${BLEED}.0);
 
   vec3 rgb = min(col * a + glow, vec3(1.0));
@@ -72,7 +70,7 @@ void main() {
 }`;
 
   const VERT = "attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }";
-  const UNIFORMS = ["uRes", "uTime", "uReveal", "uFocus", "uDim", "uShock", "uSeed", "uBurn", "uBox", "uImg", "uFocal", "uTint", "uTex"];
+  const UNIFORMS = ["uRes", "uTime", "uReveal", "uFocus", "uDim", "uSeed", "uBurn", "uBox", "uImg", "uFocal", "uTint", "uTex"];
   const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
 
   const glCanvas = document.createElement("canvas");
@@ -127,12 +125,9 @@ void main() {
       revealAt: 0,
       focus: 0.5,
       dim: 0,
-      shock: -1,
-      shockAt: -1e9,
       burn: 0,
       burnAt: 0,
       wasBurnt: false,
-      wasFocus: false,
       shown: false,
     };
     const upload = () => {
@@ -174,7 +169,6 @@ void main() {
     gl.uniform1f(U.uReveal, 1 - Math.pow(1 - item.reveal, 3));
     gl.uniform1f(U.uFocus, item.focus);
     gl.uniform1f(U.uDim, item.dim);
-    gl.uniform1f(U.uShock, item.shock < 0 ? -1 : 1 - (1 - item.shock) ** 2);
     gl.uniform1f(U.uSeed, item.seed);
     gl.uniform1f(U.uBurn, item.burn);
     gl.bindTexture(gl.TEXTURE_2D, item.tex);
@@ -202,8 +196,6 @@ void main() {
       if (!item.shown) item.revealAt = now;
       item.shown = true;
       const focused = item.fig.classList.contains("is-focus");
-      if (focused && !item.wasFocus) item.shockAt = now;
-      item.wasFocus = focused;
       item.focus += ((focused ? 1 : 0.5) - item.focus) * ease;
       item.dim += ((item.fig.classList.contains("is-dim") ? 1 : 0) - item.dim) * ease;
       item.reveal = Math.min(1, (now - item.revealAt) / 1100);
@@ -211,8 +203,6 @@ void main() {
       if (burnt !== item.wasBurnt) item.burnAt = now;
       item.wasBurnt = burnt;
       item.burn = burnt ? Math.min(1, (now - item.burnAt) / 2600) ** 1.6 : 0;
-      const sp = (now - item.shockAt) / 600;
-      item.shock = sp >= 0 && sp <= 1 ? sp : -1;
       const w = Math.round(item.fig.offsetWidth) + BLEED * 2;
       const h = Math.round(item.fig.offsetHeight) + BLEED * 2;
       if (item.canvas.width !== w || item.canvas.height !== h) {
